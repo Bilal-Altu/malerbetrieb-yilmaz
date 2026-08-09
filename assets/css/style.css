@@ -256,12 +256,16 @@ p:last-child { margin-bottom: 0; }
 }
 .site-header.is-stuck .site-header__in { min-height: 64px; }
 
-/* Logo (SVG-Nachbau des Firmenzeichens) */
+/* Logo (SVG-Nachbau des Firmenzeichens)
+   Beide Textzeilen sind im SVG per textLength auf exakt 187 Einheiten
+   festgelegt. Dadurch sind sie immer gleich breit und "GmbH" kann nie
+   in "MALERBETRIEB" hineinlaufen — auch nicht, solange die Schrift noch
+   lädt und der Browser eine Ersatzschrift mit anderen Breiten benutzt. */
 .brand { display: inline-flex; text-decoration: none; }
 .brand__mark { width: clamp(150px, 17vw, 196px); height: auto; }
 .bm-1 { font-family: var(--font-head); font-weight: 800; font-size: 30px; letter-spacing: -.5px; fill: var(--ink); }
-.bm-2 { font-family: var(--font-head); font-weight: 800; font-size: 20.2px; letter-spacing: .9px; fill: var(--red); }
-.bm-3 { font-family: var(--font-head); font-weight: 700; font-size: 12px; fill: var(--red); }
+.bm-2 { font-family: var(--font-head); font-weight: 800; font-size: 17.5px; letter-spacing: .3px; fill: var(--red); }
+.bm-3 { font-family: var(--font-head); font-weight: 700; font-size: 11px; fill: var(--red); }
 .bm-stroke--amber { fill: var(--amber); opacity: .95; }
 .bm-stroke--red   { fill: var(--red); opacity: .9; }
 .brand__mark--foot .bm-1 { fill: #fff; }
@@ -810,11 +814,39 @@ p:last-child { margin-bottom: 0; }
 /* =========================================================
    Bewertungen
    ========================================================= */
+/* Kennzahlen-Kacheln (Portal-Durchschnitt und Anzahl) */
+.ratings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .9rem;
+  margin-bottom: clamp(1.4rem, 2vw, 2rem);
+}
+.rating {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--amber);
+  border-radius: var(--r);
+  padding: .85rem 1.3rem;
+}
+.rating__v {
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 1.9rem;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.rating__m { display: grid; gap: .15rem; }
+.rating .stars { color: var(--amber); letter-spacing: .1em; font-size: .9rem; line-height: 1; }
+.rating__s { font-size: .84rem; color: var(--muted); }
+
 .quotes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: clamp(1rem, 1.6vw, 1.5rem);
-  margin-bottom: clamp(1.8rem, 3vw, 2.6rem);
+  margin-bottom: 1.1rem;
 }
 .quote {
   margin: 0;
@@ -827,13 +859,14 @@ p:last-child { margin-bottom: 0; }
 .quote p { font-size: 1rem; margin-bottom: 1rem; }
 .quote cite { font-style: normal; font-size: .86rem; color: var(--muted); font-weight: 600; }
 
-/* Platzhalter-Look, solange keine echten Bewertungen da sind */
-.quote.is-empty-quote {
-  border-style: dashed;
-  background: transparent;
+/* Herkunftshinweis unter den Zitaten (§ 5b Abs. 3 UWG) */
+.quotes__note {
+  font-size: .84rem;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 72ch;
+  margin: 0 0 clamp(1.8rem, 3vw, 2.6rem);
 }
-.quote.is-empty-quote .stars { opacity: .35; }
-.quote.is-empty-quote p { color: var(--muted); }
 
 .review-cta {
   display: flex;

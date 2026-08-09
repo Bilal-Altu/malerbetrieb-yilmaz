@@ -56,28 +56,38 @@ Diese Punkte stehen als `TODO` im Quelltext und müssen mit Hava/Hüseyin abgest
 | 2 | **Umsatzsteuer-ID** ergänzen, falls vorhanden | `impressum.html` |
 | 3 | **Handwerkskammer** bestätigen (vermutlich Frankfurt-Rhein-Main) | `impressum.html` |
 | 4 | **Hoster** eintragen + ggf. AV-Vertrag abschließen | `datenschutz.html`, Punkt 3 |
-| 5 | **Google-Bewertungslink** aus dem Unternehmensprofil einsetzen | `index.html`, Abschnitt Bewertungen |
-| 6 | **Echte Bewertungen** eintragen und die Platzhalter entfernen | `index.html`, Abschnitt Bewertungen |
-| 7 | Ist die **Mobilnummer 0178 7381857** für WhatsApp-Anfragen okay? | `index.html`, `assets/js/main.js` |
+| 5 | **Google-Bewertungslink** einsetzen, sobald das Profil übernommen ist | `index.html`, Abschnitt Bewertungen |
+| 6 | Ist die **Mobilnummer 0178 7381857** für WhatsApp-Anfragen okay? | `index.html`, `assets/js/main.js` |
 
-> **Wichtig zu den Bewertungen:** Im Quelltext stehen bewusst leere Platzhalter.
-> Erfundene Kundenstimmen sind nach § 5 UWG wettbewerbswidrig und abmahnfähig —
-> also erst eintragen, wenn echte Rezensionen da sind.
+> **Bewertungen sind drin.** Auf der Seite stehen drei wörtliche MyHammer-Zitate
+> plus die Kennzahlen 4,5/5 (12 Bewertungen, MyHammer) und 5,0/5 (2 Bewertungen,
+> Google), Stand 09.08.2026. Nichts davon ist erfunden — das wäre nach § 5 UWG
+> abmahnfähig. Wenn neue dazukommen, die Zahlen im Abschnitt `.ratings` nachziehen.
+> Der Herkunftshinweis darunter ist Pflicht nach § 5b Abs. 3 UWG und muss stehen bleiben.
 
 ## Google-Sichtbarkeit — die Reihenfolge, die wirklich zählt
 
 Hava will "ganz nach oben". Für einen Handwerksbetrieb passiert das nicht über die
 Website allein, sondern über die lokale Kartenbox. Nach Wirkung sortiert:
 
-**1. Google Unternehmensprofil (mit Abstand am wichtigsten)**
-Kostenlos unter `business.google.com` anlegen bzw. übernehmen. Vollständig ausfüllen:
+**1. Google Unternehmensprofil übernehmen (mit Abstand am wichtigsten)**
+Das Profil "R & T Yilmaz GmbH Malerbetrieb" existiert bereits, ist aber **noch nicht
+beansprucht** — Google zeigt dort "Inhaber dieses Unternehmens?" und "Öffnungszeiten
+hinzufügen" an. Solange das so ist, kann der Betrieb weder antworten noch Fotos oder
+Zeiten pflegen, und jeder Fremde darf Änderungen vorschlagen. Das ist der größte
+einzelne Hebel und kostet nichts.
+Kostenlos unter `business.google.com` übernehmen und vollständig ausfüllen:
 Hauptkategorie *Maler*, Nebenkategorien *Bauunternehmen*, *Trockenbaufirma*,
 *Fassadenbau*. Einzugsgebiet auf Heppenheim, Bensheim, Lorsch, Zwingenberg,
 Bürstadt, Lampertheim, Viernheim, Weinheim setzen. Leistungen einzeln eintragen,
 Öffnungszeiten pflegen, Website verlinken. **Und Fotos hochladen** — Profile mit
 vielen Fotos werden deutlich häufiger angeklickt.
 
-**2. Bewertungen sammeln (Bilals Punkt aus dem Chat — er stimmt)**
+**2. Bewertungen sammeln — und zwar bei Google**
+Aktuell stehen 12 Bewertungen bei MyHammer, aber nur 2 bei Google. Für die
+Google-Kartenbox zählen die MyHammer-Bewertungen praktisch nicht. Der Betrieb hat
+also nachweislich zufriedene Kunden — sie stehen nur an der falschen Stelle.
+Ab jetzt jede Anfrage nach Google lenken.
 Der Bewertungslink aus dem Unternehmensprofil lässt sich als QR-Code drucken und
 auf die Rechnung kleben. Nach jeder abgeschlossenen Baustelle einmal freundlich
 fragen. Faustregel: 15–20 echte Bewertungen bringen einen Handwerksbetrieb im
