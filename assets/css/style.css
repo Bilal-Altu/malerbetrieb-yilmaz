@@ -147,48 +147,68 @@ p:last-child { margin-bottom: 0; }
 }
 .eyebrow--light { color: var(--amber); }
 
-/* ---------- Buttons ---------- */
+/* ---------- Buttons ----------
+   Bewusst kantig (8px) statt Vollrundung: Die Karten haben 14px, die
+   Eingabefelder 9px — eine Pillenform wäre der einzige Ausreißer und
+   lässt das Ganze nach Baukasten aussehen. Und kein farbiger
+   Schlagschatten: Ein roter Schein unter einem roten Button wirkt
+   billig. Tiefe kommt über einen neutralen, engen Schatten. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: .55rem;
-  padding: .78rem 1.35rem;
-  border: 2px solid transparent;
-  border-radius: 999px;
+  padding: .8rem 1.4rem;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
   font-family: var(--font-body);
   font-size: .95rem;
   font-weight: 600;
+  letter-spacing: .005em;
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
-  transition: transform .15s ease, background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+  transition: transform .16s ease, background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
-.btn--lg { padding: 1rem 1.7rem; font-size: 1.02rem; }
-.btn:hover { transform: translateY(-2px); }
-.btn:active { transform: translateY(0); }
+.btn--lg { padding: 1.02rem 1.75rem; font-size: 1.02rem; }
+.btn:active { transform: translateY(1px); }
 
 .btn--red {
   background: var(--red);
   border-color: var(--red);
   color: #fff;
-  box-shadow: 0 8px 22px rgba(200, 16, 46, .28);
+  box-shadow: 0 1px 2px rgba(20, 32, 58, .18);
 }
-.btn--red:hover { background: var(--red-dark); border-color: var(--red-dark); }
+.btn--red:hover {
+  background: var(--red-dark);
+  border-color: var(--red-dark);
+  box-shadow: 0 5px 14px rgba(20, 32, 58, .18);
+  transform: translateY(-1px);
+}
 
 .btn--ghost {
   background: transparent;
-  border-color: var(--ink);
+  border-color: rgba(20, 32, 58, .28);
   color: var(--ink);
 }
-.btn--ghost:hover { background: var(--ink); color: #fff; }
+.btn--ghost:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+  transform: translateY(-1px);
+}
 
 .btn--wa {
   background: transparent;
-  border-color: var(--wa);
+  border-color: rgba(31, 157, 85, .5);
   color: var(--wa);
 }
-.btn--wa:hover { background: var(--wa); color: #fff; }
+.btn--wa:hover {
+  background: var(--wa);
+  border-color: var(--wa);
+  color: #fff;
+  transform: translateY(-1px);
+}
 
 /* =========================================================
    Topbar
