@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="R&amp;T Yilmaz Malerbetrieb">
+  <!-- Roter Grund statt Navy: Ein dunkelblaues Kästchen verschwindet in
+       dunklen Tableisten. Rot hebt sich auf hellem wie auf dunklem Grund ab. -->
+  <rect width="32" height="32" rx="6" fill="#c8102e"/>
+  <!-- Das Y als Pfad, nicht als Text: Bei 16 px hängt eine Schriftart von
+       den Systemschriften ab, ein Pfad sieht überall gleich aus. -->
+  <path d="M9 9.5 16 17l7-7.5M16 17v6"
+        fill="none" stroke="#fff" stroke-width="4.2"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
