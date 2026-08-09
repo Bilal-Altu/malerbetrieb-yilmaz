@@ -318,7 +318,17 @@ p:last-child { margin-bottom: 0; }
 }
 .nav > a:not(.nav__cta):hover::after,
 .nav > a.is-active::after { transform: scaleX(1); }
-.nav__cta { margin-left: .4rem; }
+/* Achtung: Der Kopf-Button ist gleichzeitig ein .nav > a. Dieser
+   Selektor ist spezifischer als .btn und .btn--red und hat vorher
+   Textfarbe, Polsterung und Schriftschnitt des Buttons überschrieben —
+   Ergebnis war dunkelblauer Text auf Rot ohne seitliche Polsterung.
+   Deshalb hier bewusst mit .nav > a.nav__cta gegenhalten. */
+.nav > a.nav__cta {
+  margin-left: .5rem;
+  padding: .64rem 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
 
 .burger {
   display: none;
@@ -371,13 +381,15 @@ p:last-child { margin-bottom: 0; }
     border-bottom: 1px solid var(--line-dark);
   }
   .nav > a::after { display: none; }
-  .nav__cta {
-    margin: 1.3rem 0 0;
-    border-bottom: none !important;
+  .nav > a.nav__cta {
+    margin: 1.4rem 0 0;
+    border-bottom: none;
     align-self: flex-start;
-    font-family: var(--font-body) !important;
-    font-size: 1rem !important;
-    padding: 1rem 1.7rem !important;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1rem 1.7rem;
+    color: #fff;
   }
   body.nav-open { overflow: hidden; }
 }
