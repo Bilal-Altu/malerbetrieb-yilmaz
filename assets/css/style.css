@@ -712,6 +712,28 @@ p:last-child { margin-bottom: 0; }
   clip-path: inset(0 calc(100% - var(--pos)) 0 0);
   filter: saturate(.72);
 }
+
+/* ---------------------------------------------------------------
+   Beispieldarstellung: Beide Seiten zeigen dasselbe Foto, die
+   "Vorher"-Seite wird verwittert. Das ist bewusst so gebaut —
+   Standpunkt, Brennweite und Licht sind dadurch zwangsläufig
+   identisch, und genau davon lebt ein Vorher/Nachher-Vergleich.
+
+   SOBALD ECHTE FOTOS DA SIND: die Klasse "is-demo" am Element
+   #compare entfernen. Dann liegt wieder unverändert das, was in
+   referenz-1-vorher.jpg steht.
+   --------------------------------------------------------------- */
+.compare__box.is-demo .compare__before {
+  filter: saturate(.34) brightness(.87) contrast(.93) sepia(.22) hue-rotate(-6deg);
+}
+.compare__box.is-demo .compare__before::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../img/verwitterung.svg") center / 100% 100% no-repeat;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
 .compare__before.is-empty {
   background:
     repeating-linear-gradient(135deg,

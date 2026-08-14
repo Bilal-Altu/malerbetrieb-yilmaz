@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" preserveAspectRatio="none">
+  <!-- Verwitterungs-Auflage für die "Vorher"-Seite des Vergleichs.
+       Rein prozedural: Rauschen für die Fleckigkeit, Verläufe für
+       Algen am Sockel und Schmutzfahnen unter Fensterbank und
+       Traufe, ein paar Haarrisse. Wird per mix-blend-mode: multiply
+       über das Foto gelegt. -->
+  <defs>
+    <filter id="wolken" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.017" numOctaves="4" seed="11" result="t"/>
+      <feColorMatrix in="t" type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="gamma" exponent="2.6" amplitude="1.15"/>
+      </feComponentTransfer>
+    </filter>
+
+    <linearGradient id="sockel" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0"   stop-color="#26331f" stop-opacity=".80"/>
+      <stop offset=".35" stop-color="#33422a" stop-opacity=".42"/>
+      <stop offset="1"   stop-color="#3a4632" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="fahne" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#4a4438" stop-opacity=".52"/>
+      <stop offset=".55" stop-color="#4a4438" stop-opacity=".26"/>
+      <stop offset="1"   stop-color="#4a4438" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="traufe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#3f3b31" stop-opacity=".45"/>
+      <stop offset="1"   stop-color="#3f3b31" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Grundfleckigkeit über die ganze Fläche -->
+  <rect width="1200" height="750" filter="url(#wolken)" opacity=".30"/>
+
+  <!-- Algen- und Spritzwasserzone am Sockel -->
+  <rect x="0" y="520" width="1200" height="230" fill="url(#sockel)"/>
+
+  <!-- Schmutzfahnen unter der Fensterbank im Giebel -->
+  <g fill="url(#fahne)">
+    <rect x="505" y="360" width="14" height="215"/>
+    <rect x="532" y="360" width="7"  height="150"/>
+    <rect x="601" y="358" width="18" height="255"/>
+    <rect x="630" y="358" width="9"  height="130"/>
+    <rect x="666" y="360" width="12" height="190"/>
+  </g>
+
+  <!-- Ablaufspuren unter der Traufe, links und rechts -->
+  <g fill="url(#traufe)">
+    <rect x="238" y="405" width="26" height="150"/>
+    <rect x="285" y="418" width="15" height="110"/>
+    <rect x="880" y="400" width="22" height="160"/>
+    <rect x="925" y="415" width="12" height="120"/>
+  </g>
+
+  <!-- Haarrisse im Putz -->
+  <g stroke="#2b2822" stroke-opacity=".34" fill="none" stroke-linecap="round">
+    <path d="M497 372 L486 431 L494 470 L481 528" stroke-width="1.6"/>
+    <path d="M714 366 L727 418 L719 452" stroke-width="1.3"/>
+    <path d="M352 470 L339 512 L346 556" stroke-width="1.2"/>
+    <path d="M842 486 L856 534" stroke-width="1.1"/>
+    <path d="M600 600 L588 641 L597 690" stroke-width="1.4"/>
+  </g>
+
+  <!-- Abgeplatzte Stellen am unteren Rand -->
+  <g fill="#3a352c" fill-opacity=".22">
+    <ellipse cx="415" cy="681" rx="46" ry="15"/>
+    <ellipse cx="763" cy="668" rx="34" ry="11"/>
+    <ellipse cx="197" cy="700" rx="52" ry="13"/>
+  </g>
+</svg>

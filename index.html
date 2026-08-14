@@ -280,7 +280,9 @@
 
     <!-- Vorher/Nachher-Vergleich -->
     <div class="compare reveal">
-      <div class="compare__box" id="compare">
+      <!-- is-demo verwittert die "Vorher"-Seite per CSS. Sobald echte
+           Vorher-Fotos vorliegen: diese Klasse entfernen. -->
+      <div class="compare__box is-demo" id="compare">
         <figure class="media compare__after" data-label="Foto folgt — Fassade nachher">
           <img src="assets/img/referenz-1-nachher.jpg" alt="Fassade eines Einfamilienhauses nach Dämmung und Neuanstrich" width="1200" height="750" onerror="window.phFail(this)" />
         </figure>
@@ -293,7 +295,25 @@
         <span class="compare__tag compare__tag--l">Vorher</span>
         <span class="compare__tag compare__tag--r">Nachher</span>
       </div>
-      <p class="compare__cap">Fassadensanierung mit Wärmedämm-Verbundsystem, Heppenheim <span class="muted">(Beispielprojekt)</span></p>
+      <!-- ============================================================
+           Erwartet zwei Dateien in assets/img/:
+             referenz-1-vorher.jpg   und   referenz-1-nachher.jpg
+           Beide im Querformat 16:10, gleicher Standpunkt, gleiche
+           Brennweite. Sobald sie dort liegen, erscheinen sie von
+           selbst — am HTML ist nichts zu ändern.
+
+           SOLANGE es erzeugte oder fremde Bilder sind, muss die
+           Kennzeichnung unten stehen bleiben. Ein KI-Bild unter
+           "Referenzen" zeigt ein Projekt, das es nie gab — das ist
+           irreführende Werbung nach § 5 UWG, schärfer als ein
+           Stockfoto. Erst mit echten Baustellenfotos darf die
+           Klammer weg und die Zeile lauten:
+           "Fassadensanierung mit WDVS, Heppenheim".
+           ============================================================ -->
+      <p class="compare__cap">
+        So funktioniert der Vergleich &ndash; Regler ziehen.
+        <span class="muted">Beispieldarstellung, kein ausgeführtes Projekt.</span>
+      </p>
     </div>
 
     <!-- Galerie -->
