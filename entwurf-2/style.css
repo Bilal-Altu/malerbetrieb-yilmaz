@@ -205,64 +205,98 @@ p:last-child { margin-bottom: 0; }
 .sec-head { margin-bottom: clamp(2.4rem, 4vw, 4rem); }
 .sec-head h2 { margin: 0; }
 
-/* ---------- Leistungen ----------
-   Jede Leistung ist ein eigener Block mit eigenem Bild. Bewusst nichts
-   Angepinntes: Ein sticky Bildfeld ueber einer scrollenden Liste
-   kollidiert auf einem schmalen Schirm zwangslaeufig mit dem Text,
-   weil beide dieselbe Spalte teilen. Hier kann sich nichts
-   ueberlagern — auf keinem Geraet. */
-.svcs {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: clamp(3.2rem, 8vw, 6.5rem);
-}
-.svc-item { display: grid; gap: clamp(1.2rem, 3vw, 1.8rem); align-items: center; }
+/* ---------- Leistungen: redaktionelles Register ----------
+   Zwoelfspalten-Raster. Der Text haelt immer dieselben Spalten,
+   ausbrechen duerfen nur die Bilder — dadurch entsteht Rhythmus aus
+   dem Raster heraus statt aus gespiegelten Haelften. Haarlinien
+   trennen die Eintraege, Kaesten gibt es keine. Die Bilder haben
+   bewusst scharfe Ecken: Das Zweite hier ist Handwerk, nicht App. */
+.idx { list-style: none; margin: 0; padding: 0; }
 
-.svc-pic {
+.idx-item {
+  display: grid;
+  gap: clamp(1.4rem, 3vw, 2rem);
+  padding-top: clamp(2.4rem, 5vw, 4rem);
+  padding-bottom: clamp(2.4rem, 5vw, 4rem);
+  border-top: 1px solid var(--line);
+}
+.idx-item:last-child { border-bottom: 1px solid var(--line); }
+
+.idx-pic {
+  position: relative;
   margin: 0;
   overflow: hidden;
-  border-radius: var(--r);
   aspect-ratio: 16 / 10;
   background: var(--bg-2);
 }
-.svc-pic img { width: 100%; height: 100%; object-fit: cover; }
+.idx-pic img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-.svc-n {
+/* Ziffer als Konturschrift — traegt die Seite mit, ohne zu schreien */
+.idx-n {
   display: block;
   font-family: var(--head);
   font-weight: 800;
-  font-size: .8rem;
+  font-size: clamp(3.2rem, 11vw, 5.6rem);
+  line-height: .8;
+  letter-spacing: -.04em;
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgba(244, 241, 236, .26);
+  margin-bottom: 1rem;
+}
+.idx-tag {
+  font-family: var(--body);
+  font-size: .7rem;
+  font-weight: 600;
   letter-spacing: .22em;
+  text-transform: uppercase;
   color: var(--amber);
-  margin-bottom: .8rem;
+  margin: 0 0 .7rem;
 }
-.svc-txt h3 { font-size: clamp(1.4rem, 1.1rem + 1.1vw, 2rem); margin-bottom: .55rem; }
-.svc-txt p { color: var(--dim); margin: 0; max-width: 52ch; font-size: 1rem; }
+.idx-body h3 {
+  font-size: clamp(1.5rem, 1.1rem + 1.7vw, 2.6rem);
+  line-height: 1.05;
+  margin-bottom: .7rem;
+}
+.idx-txt { color: var(--dim); margin: 0; max-width: 46ch; font-size: 1rem; }
 
-/* Ab Tablet nebeneinander, jede zweite Zeile seitenverkehrt —
-   das gibt der Abfolge einen Rhythmus statt einer Liste. */
-@media (min-width: 860px) {
-  .svc-item { grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); }
-  .svc-item:nth-child(even) .svc-pic { order: 2; }
+@media (min-width: 900px) {
+  .idx-item {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2.2rem);
+    align-items: start;
+  }
+  .idx-body { grid-column: 1 / 6; }
+  .idx-pic  { grid-column: 7 / 13; }
+
+  /* Die Ausbrueche: zwei Eintraege greifen eine Spalte weiter und
+     sitzen tiefer, einer steht hochkant. Der Text bleibt unberuehrt. */
+  .idx-item:nth-child(2n) .idx-pic { grid-column: 6 / 13; margin-top: clamp(2rem, 4vw, 4rem); }
+  .idx-item:nth-child(3n) .idx-pic { aspect-ratio: 3 / 4; }
+  .idx-item:nth-child(2n) .idx-body { padding-top: clamp(1rem, 2vw, 2rem); }
 }
 
-/* Aufziehen beim Hereinscrollen. Haengt an derselben .reveal-Mechanik
-   wie der Rest der Seite — inklusive der Notbremse in main.js, die
-   nach 1,5s alles einblendet, falls der Observer nicht ausloest. */
-.js .svc-pic.reveal {
+/* Aufziehen beim Hereinscrollen — gleiche .reveal-Mechanik wie der
+   Rest der Seite, inklusive der Notbremse in main.js. */
+.js .idx-pic.reveal {
   opacity: 1;
   transform: none;
-  clip-path: inset(0 100% 0 0 round 4px);
-  transition: clip-path .95s cubic-bezier(.16, .84, .36, 1);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1s cubic-bezier(.16, .84, .36, 1);
 }
-.js .svc-pic.reveal.is-in { clip-path: inset(0 0 0 0 round 4px); }
-.js .svc-pic.reveal img {
-  transform: scale(1.14);
-  transition: transform 1.5s cubic-bezier(.16, .84, .36, 1);
-}
-.js .svc-pic.reveal.is-in img { transform: none; }
+.js .idx-pic.reveal.is-in { clip-path: inset(0 0 0 0); }
+
+/* Parallaxe: Das Bild ist hoeher als sein Rahmen und wandert darin.
+   Weil die Bewegung INNERHALB eines overflow:hidden-Rahmens
+   stattfindet, kann sie grundsaetzlich nichts ueberlagern und
+   veraendert kein Layout. parallax.js setzt .pf--on erst, wenn es
+   laeuft; ohne das Skript sitzt das Bild einfach ruhig im Rahmen. */
+.pf--on img { height: 124%; top: -12%; will-change: transform; }
 
 /* ---------- Bildband ---------- */
 .band { position: relative; min-height: min(70vh, 560px); display: flex; align-items: flex-end; overflow: hidden; }
@@ -412,6 +446,7 @@ p:last-child { margin-bottom: 0; }
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
   .btn:hover, .mosaic figure:hover img { transform: none; }
   /* Kein Aufziehen, kein Heranfahren — Bild sofort vollstaendig da */
-  .js .svc-pic.reveal { clip-path: none; }
-  .js .svc-pic.reveal img { transform: none; }
+  /* Kein Aufziehen, keine Parallaxe — Bild sofort ruhig im Rahmen */
+  .js .idx-pic.reveal { clip-path: none; }
+  .pf--on img { height: 100%; top: 0; transform: none !important; }
 }
