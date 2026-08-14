@@ -40,6 +40,38 @@ npx serve malerbetrieb-yilmaz
 - Impressum nach aktuellem **DDG** (das TMG von der alten Seite gibt es seit 2024 nicht mehr)
   und eine DSGVO-Datenschutzerklärung.
 
+## Zwei Entwürfe zur Auswahl
+
+| | Entwurf 1 (Wurzel) | Entwurf 2 (`entwurf-2/`) |
+|---|---|---|
+| Grundton | hell, warmes Papierweiß | dunkel, fast schwarz |
+| Aufbau | Karten und Kästen | durchgehende Fotobänder |
+| Leistungen | sechs Karten im Raster | nummerierte Zeilenliste |
+| Referenzen | Vorher/Nachher-Regler + Galerie | asymmetrisches Mosaik |
+| Wirkt | sachlich, aufgeräumt | ruhig, hochwertig |
+
+Beide teilen sich Schriften, Bilder, JavaScript, Impressum und Datenschutz.
+Entwurf 2 steht auf `noindex`, damit er der späteren echten Seite bei Google
+keine Konkurrenz macht. Wenn die Wahl gefallen ist, wandert der Gewinner in die
+Wurzel und der andere Ordner wird gelöscht.
+
+## ⚠️ Die Bilder sind derzeit Beispielbilder
+
+In beiden Entwürfen stecken acht lizenzfreie Fotos von Unsplash (Unsplash-Lizenz,
+kommerziell nutzbar, keine Namensnennung nötig). Sie sind nur da, damit die Seite
+nicht leer wirkt.
+
+**Vor dem Livegang müssen sie raus.** Fremde Aufnahmen unter einer Überschrift wie
+„Unsere Baustellen" zu zeigen, ist irreführende Werbung nach § 5 UWG und
+abmahnfähig — dasselbe Thema wie erfundene Bewertungen. Deshalb steht in beiden
+Entwürfen ein sichtbarer Hinweis unter der Galerie und ein angepasster
+Bildnachweis im Impressum. Beides erst entfernen, wenn die echten Fotos drin sind.
+
+Der Vorher/Nachher-Regler in Entwurf 1 hat bewusst **keine** Beispielbilder
+bekommen: Zwei zusammenhanglose Stockfotos als „vorher" und „nachher"
+auszugeben, wäre eine glatte Falschaussage. Dafür braucht es ein echtes
+Projektpaar vom selben Standpunkt.
+
 ## Fotos einsetzen
 
 Siehe `assets/img/BILDER-HIER-ABLEGEN.md`. Kurz: Datei mit dem passenden Namen in

@@ -791,6 +791,20 @@ p:last-child { margin-bottom: 0; }
   gap: clamp(.8rem, 1.4vw, 1.4rem);
 }
 
+/* Hinweis, solange Beispielbilder statt eigener Fotos gezeigt werden */
+.stock-note {
+  margin: 1.4rem 0 0;
+  padding: .85rem 1.1rem;
+  border-left: 3px solid var(--amber);
+  background: rgba(242, 166, 59, .09);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: .87rem;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 72ch;
+}
+.stock-note strong { color: var(--ink); }
+
 /* =========================================================
    Über uns
    ========================================================= */
