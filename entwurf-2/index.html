@@ -104,7 +104,11 @@
       <h2>Was wir machen</h2>
     </header>
 
-    <ol class="rows">
+    <!-- Das Bildfeld baut rows.js als erstes Kind hier hinein. Ohne
+         JavaScript bleiben stattdessen die kleinen Vorschaubilder in
+         den Zeilen stehen. -->
+    <div class="svc">
+    <ol class="rows svc__list">
       <li class="row reveal">
         <span class="row__n">01</span>
         <div class="row__body">
@@ -160,6 +164,7 @@
         </div>
       </li>
     </ol>
+    </div>
   </div>
 </section>
 

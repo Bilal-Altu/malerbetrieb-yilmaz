@@ -234,13 +234,70 @@ p:last-child { margin-bottom: 0; }
   .row__pic { display: none; }
 }
 
-/* --- Zustand mit schwebendem Bild (nur bei echtem Mauszeiger) --- */
-.rows--float .row { grid-template-columns: 4.5rem minmax(0, 1fr); }
-.rows--float .row__pic { display: none; }
-.rows--float .row:hover { background: none; }
+/* --- Mitlaufendes Bildfeld, vom Scrollen gesteuert ---
+   Bewusst scroll- statt zeigergesteuert: Auf dem Handy gibt es kein
+   Hover, und dort wird die Seite zuerst angeschaut. Derselbe Effekt
+   läuft auf jedem Geraet — nur die Anordnung wechselt. */
+.svc { display: grid; }
+
+.js .svc__media {
+  position: sticky;
+  top: 86px;
+  height: 40vh;
+  max-height: 340px;
+  margin-bottom: 1.8rem;
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--bg-2);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+}
+/* Vorschaubild in der Zeile weicht dem mitlaufenden Bildfeld.
+   Die dritte Rasterspalte muss dabei mit weg, sonst klafft
+   zwischen 861 und 899 Pixeln eine leere 190px-Spalte. */
+.js .row__pic { display: none; }
+.js .row { grid-template-columns: 4.5rem minmax(0, 1fr); }
+@media (max-width: 860px) {
+  .js .row { grid-template-columns: 3rem minmax(0, 1fr); }
+}
+
+.svc__layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity .6s ease, transform 1s cubic-bezier(.2, .7, .3, 1);
+}
+.svc__layer.is-on { opacity: 1; transform: none; }
+.svc__layer img { width: 100%; height: 100%; object-fit: cover; }
+
+.svc__idx {
+  position: absolute;
+  left: .8rem; bottom: .75rem;
+  font-family: var(--head);
+  font-weight: 700;
+  font-size: .76rem;
+  letter-spacing: .14em;
+  color: var(--fg);
+  background: rgba(14, 17, 22, .62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: .35rem .6rem;
+  border-radius: 3px;
+}
+.svc__idx b { color: var(--amber); }
+
+/* Aktive Zeile hervorheben, die übrigen treten zurück */
+.js .row__n, .js .row__body {
+  transition: opacity .45s ease, transform .5s cubic-bezier(.2, .7, .3, 1), color .3s ease;
+}
+.js .svc.is-live .row__n,
+.js .svc.is-live .row__body { opacity: .42; }
+.js .svc.is-live .row.is-active .row__n,
+.js .svc.is-live .row.is-active .row__body { opacity: 1; }
+.js .row.is-active .row__n { color: var(--fg); }
 
 /* Akzentlinie, die unter der aktiven Zeile aufzieht */
-.rows--float .row::after {
+.js .row::after {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: -1px;
@@ -250,44 +307,26 @@ p:last-child { margin-bottom: 0; }
   transform-origin: left;
   transition: transform .55s cubic-bezier(.2, .7, .3, 1);
 }
-.rows--float .row.is-active::after { transform: scaleX(1); }
+.js .row.is-active::after { transform: scaleX(1); }
 
-/* Nicht angesteuerte Zeilen treten zurück */
-.rows--float .row__n,
-.rows--float .row__body {
-  transition: opacity .4s ease, transform .45s cubic-bezier(.2, .7, .3, 1), color .3s ease;
+/* Ab Tablet nebeneinander: Liste links, Bild rechts mitlaufend */
+@media (min-width: 900px) {
+  .js .svc {
+    grid-template-columns: minmax(0, 1fr) minmax(0, .78fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+  .js .svc__list { grid-column: 1; grid-row: 1; }
+  .js .svc__media {
+    grid-column: 2; grid-row: 1;
+    top: 110px;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 4 / 5;
+    margin-bottom: 0;
+  }
+  .js .row.is-active .row__body { transform: translateX(10px); }
 }
-.rows--float.is-hovering .row__n,
-.rows--float.is-hovering .row__body { opacity: .3; }
-.rows--float.is-hovering .row.is-active .row__n,
-.rows--float.is-hovering .row.is-active .row__body { opacity: 1; }
-.rows--float .row.is-active .row__n { color: var(--fg); }
-.rows--float .row.is-active .row__body { transform: translateX(12px); }
-
-/* Das schwebende Bild selbst */
-.rowfloat {
-  position: fixed;
-  top: 0; left: 0;
-  width: clamp(230px, 21vw, 340px);
-  aspect-ratio: 4 / 5;
-  border-radius: var(--r);
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 45;
-  opacity: 0;
-  transition: opacity .38s ease;
-  will-change: transform, opacity;
-  box-shadow: 0 34px 80px rgba(0, 0, 0, .6);
-}
-.rowfloat.is-on { opacity: 1; }
-.rowfloat__layer {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity .5s ease;
-}
-.rowfloat__layer.is-on { opacity: 1; }
-.rowfloat__layer img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ---------- Bildband ---------- */
 .band { position: relative; min-height: min(70vh, 560px); display: flex; align-items: flex-end; overflow: hidden; }
