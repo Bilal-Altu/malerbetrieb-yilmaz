@@ -205,133 +205,64 @@ p:last-child { margin-bottom: 0; }
 .sec-head { margin-bottom: clamp(2.4rem, 4vw, 4rem); }
 .sec-head h2 { margin: 0; }
 
-/* ---------- Leistungs-Zeilen ----------
-   Grundzustand: schlichte Liste mit Vorschaubild rechts. Die steht
-   auch ohne JavaScript. Läuft JavaScript, blendet rows.js die
-   Vorschaubilder aus und setzt stattdessen ein mitlaufendes
-   Bildfeld davor bzw. daneben — siehe weiter unten. */
-.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-.row {
+/* ---------- Leistungen ----------
+   Jede Leistung ist ein eigener Block mit eigenem Bild. Bewusst nichts
+   Angepinntes: Ein sticky Bildfeld ueber einer scrollenden Liste
+   kollidiert auf einem schmalen Schirm zwangslaeufig mit dem Text,
+   weil beide dieselbe Spalte teilen. Hier kann sich nichts
+   ueberlagern — auf keinem Geraet. */
+.svcs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr) 190px;
-  gap: clamp(1rem, 3vw, 2.5rem);
-  align-items: center;
-  padding: clamp(1.6rem, 3vw, 2.4rem) 0;
-  border-bottom: 1px solid var(--line);
-  position: relative;
-  transition: background-color .25s ease;
+  gap: clamp(3.2rem, 8vw, 6.5rem);
 }
-.row:hover { background: rgba(255, 255, 255, .03); }
-.row__n { font-family: var(--head); font-weight: 800; font-size: 1rem; color: var(--amber); letter-spacing: .06em; }
-.row__body h3 { margin-bottom: .4rem; }
-.row__body p { color: var(--dim); font-size: .98rem; max-width: 62ch; margin: 0; }
-.row__pic { overflow: hidden; border-radius: var(--r); aspect-ratio: 4 / 3; }
-.row__pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s cubic-bezier(.2, .7, .3, 1); }
-.row:hover .row__pic img { transform: scale(1.05); }
+.svc-item { display: grid; gap: clamp(1.2rem, 3vw, 1.8rem); align-items: center; }
 
-@media (max-width: 860px) {
-  .row { grid-template-columns: 3rem minmax(0, 1fr); }
-  .row__pic { display: none; }
-}
-
-/* --- Mitlaufendes Bildfeld, vom Scrollen gesteuert ---
-   Bewusst scroll- statt zeigergesteuert: Auf dem Handy gibt es kein
-   Hover, und dort wird die Seite zuerst angeschaut. Derselbe Effekt
-   läuft auf jedem Geraet — nur die Anordnung wechselt. */
-.svc { display: grid; }
-
-/* Alles Folgende hängt an .svc--live. Diese Klasse setzt rows.js erst,
-   nachdem das Bildfeld tatsächlich im Dokument steht. Hinge es nur an
-   "JavaScript ist an", würde ein Skriptfehler die Vorschaubilder
-   ausblenden, ohne Ersatz zu liefern — die Sektion stünde ohne jedes
-   Bild da. So bleibt im Zweifel die schlichte Liste. */
-.svc--live .svc__media {
-  position: sticky;
-  top: 86px;
-  height: 40vh;
-  max-height: 340px;
-  margin-bottom: 1.8rem;
-  border-radius: var(--r);
+.svc-pic {
+  margin: 0;
   overflow: hidden;
+  border-radius: var(--r);
+  aspect-ratio: 16 / 10;
   background: var(--bg-2);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
 }
-/* Vorschaubild in der Zeile weicht dem Bildfeld. Die dritte
-   Rasterspalte muss mit weg, sonst klafft zwischen 861 und 899
-   Pixeln eine leere 190px-Spalte. */
-.svc--live .row__pic { display: none; }
-.svc--live .row { grid-template-columns: 4.5rem minmax(0, 1fr); }
-@media (max-width: 860px) {
-  .svc--live .row { grid-template-columns: 3rem minmax(0, 1fr); }
-}
+.svc-pic img { width: 100%; height: 100%; object-fit: cover; }
 
-.svc__layer {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: scale(1.05);
-  transition: opacity .6s ease, transform 1s cubic-bezier(.2, .7, .3, 1);
-}
-.svc__layer.is-on { opacity: 1; transform: none; }
-.svc__layer img { width: 100%; height: 100%; object-fit: cover; }
-
-.svc__idx {
-  position: absolute;
-  left: .8rem; bottom: .75rem;
+.svc-n {
+  display: block;
   font-family: var(--head);
-  font-weight: 700;
-  font-size: .76rem;
-  letter-spacing: .14em;
-  color: var(--fg);
-  background: rgba(14, 17, 22, .62);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: .35rem .6rem;
-  border-radius: 3px;
+  font-weight: 800;
+  font-size: .8rem;
+  letter-spacing: .22em;
+  color: var(--amber);
+  margin-bottom: .8rem;
 }
-.svc__idx b { color: var(--amber); }
+.svc-txt h3 { font-size: clamp(1.4rem, 1.1rem + 1.1vw, 2rem); margin-bottom: .55rem; }
+.svc-txt p { color: var(--dim); margin: 0; max-width: 52ch; font-size: 1rem; }
 
-/* Aktive Zeile hervorheben, die übrigen treten zurück */
-.svc--live .row__n, .svc--live .row__body {
-  transition: opacity .45s ease, transform .5s cubic-bezier(.2, .7, .3, 1), color .3s ease;
+/* Ab Tablet nebeneinander, jede zweite Zeile seitenverkehrt —
+   das gibt der Abfolge einen Rhythmus statt einer Liste. */
+@media (min-width: 860px) {
+  .svc-item { grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); }
+  .svc-item:nth-child(even) .svc-pic { order: 2; }
 }
-.svc--live.is-live .row__n,
-.svc--live.is-live .row__body { opacity: .42; }
-.svc--live.is-live .row.is-active .row__n,
-.svc--live.is-live .row.is-active .row__body { opacity: 1; }
-.svc--live .row.is-active .row__n { color: var(--fg); }
 
-/* Akzentlinie, die unter der aktiven Zeile aufzieht */
-.svc--live .row::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -1px;
-  height: 1px;
-  background: var(--amber);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .55s cubic-bezier(.2, .7, .3, 1);
+/* Aufziehen beim Hereinscrollen. Haengt an derselben .reveal-Mechanik
+   wie der Rest der Seite — inklusive der Notbremse in main.js, die
+   nach 1,5s alles einblendet, falls der Observer nicht ausloest. */
+.js .svc-pic.reveal {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 100% 0 0 round 4px);
+  transition: clip-path .95s cubic-bezier(.16, .84, .36, 1);
 }
-.svc--live .row.is-active::after { transform: scaleX(1); }
-
-/* Ab Tablet nebeneinander: Liste links, Bild rechts mitlaufend */
-@media (min-width: 900px) {
-  .svc--live {
-    grid-template-columns: minmax(0, 1fr) minmax(0, .78fr);
-    gap: clamp(2rem, 4vw, 4rem);
-    align-items: start;
-  }
-  .svc--live .svc__list { grid-column: 1; grid-row: 1; }
-  .svc--live .svc__media {
-    grid-column: 2; grid-row: 1;
-    top: 110px;
-    height: auto;
-    max-height: none;
-    aspect-ratio: 4 / 5;
-    margin-bottom: 0;
-  }
-  .svc--live .row.is-active .row__body { transform: translateX(10px); }
+.js .svc-pic.reveal.is-in { clip-path: inset(0 0 0 0 round 4px); }
+.js .svc-pic.reveal img {
+  transform: scale(1.14);
+  transition: transform 1.5s cubic-bezier(.16, .84, .36, 1);
 }
+.js .svc-pic.reveal.is-in img { transform: none; }
 
 /* ---------- Bildband ---------- */
 .band { position: relative; min-height: min(70vh, 560px); display: flex; align-items: flex-end; overflow: hidden; }
@@ -479,5 +410,8 @@ p:last-child { margin-bottom: 0; }
   html { scroll-behavior: auto; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
-  .btn:hover, .row:hover .row__pic img, .mosaic figure:hover img { transform: none; }
+  .btn:hover, .mosaic figure:hover img { transform: none; }
+  /* Kein Aufziehen, kein Heranfahren — Bild sofort vollstaendig da */
+  .js .svc-pic.reveal { clip-path: none; }
+  .js .svc-pic.reveal img { transform: none; }
 }
