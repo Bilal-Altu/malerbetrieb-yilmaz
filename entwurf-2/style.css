@@ -296,7 +296,10 @@ p:last-child { margin-bottom: 0; }
    stattfindet, kann sie grundsaetzlich nichts ueberlagern und
    veraendert kein Layout. parallax.js setzt .pf--on erst, wenn es
    laeuft; ohne das Skript sitzt das Bild einfach ruhig im Rahmen. */
-.pf--on img { height: 124%; top: -12%; will-change: transform; }
+/* 128 % Hoehe bei -14 % Versatz, bewegt wird um hoechstens ±12 %.
+   Damit bleiben in jeder Auslenkung 2 % Reserve — sonst blitzt am
+   Endanschlag der Rahmenhintergrund als Haarstrich durch. */
+.pf--on img { height: 128%; top: -14%; will-change: transform; }
 
 /* ---------- Bildband ---------- */
 .band { position: relative; min-height: min(70vh, 560px); display: flex; align-items: flex-end; overflow: hidden; }

@@ -20,7 +20,9 @@
   var frames = Array.prototype.slice.call(document.querySelectorAll(".pf"));
   if (!frames.length) return;
 
-  var SPIELRAUM = 0.12;   // muss zur Mehrhöhe in der CSS passen (124 % → 12 %)
+  /* Höchstauslenkung. Muss kleiner sein als die halbe Mehrhöhe aus der
+     CSS (128 % → 14 %), sonst blitzt am Endanschlag der Rahmen durch. */
+  var SPIELRAUM = 0.12;
   var sichtbar = [];
   var laeuft = 0;
 
