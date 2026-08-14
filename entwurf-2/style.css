@@ -240,7 +240,12 @@ p:last-child { margin-bottom: 0; }
    läuft auf jedem Geraet — nur die Anordnung wechselt. */
 .svc { display: grid; }
 
-.js .svc__media {
+/* Alles Folgende hängt an .svc--live. Diese Klasse setzt rows.js erst,
+   nachdem das Bildfeld tatsächlich im Dokument steht. Hinge es nur an
+   "JavaScript ist an", würde ein Skriptfehler die Vorschaubilder
+   ausblenden, ohne Ersatz zu liefern — die Sektion stünde ohne jedes
+   Bild da. So bleibt im Zweifel die schlichte Liste. */
+.svc--live .svc__media {
   position: sticky;
   top: 86px;
   height: 40vh;
@@ -251,13 +256,13 @@ p:last-child { margin-bottom: 0; }
   background: var(--bg-2);
   box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
 }
-/* Vorschaubild in der Zeile weicht dem mitlaufenden Bildfeld.
-   Die dritte Rasterspalte muss dabei mit weg, sonst klafft
-   zwischen 861 und 899 Pixeln eine leere 190px-Spalte. */
-.js .row__pic { display: none; }
-.js .row { grid-template-columns: 4.5rem minmax(0, 1fr); }
+/* Vorschaubild in der Zeile weicht dem Bildfeld. Die dritte
+   Rasterspalte muss mit weg, sonst klafft zwischen 861 und 899
+   Pixeln eine leere 190px-Spalte. */
+.svc--live .row__pic { display: none; }
+.svc--live .row { grid-template-columns: 4.5rem minmax(0, 1fr); }
 @media (max-width: 860px) {
-  .js .row { grid-template-columns: 3rem minmax(0, 1fr); }
+  .svc--live .row { grid-template-columns: 3rem minmax(0, 1fr); }
 }
 
 .svc__layer {
@@ -287,17 +292,17 @@ p:last-child { margin-bottom: 0; }
 .svc__idx b { color: var(--amber); }
 
 /* Aktive Zeile hervorheben, die übrigen treten zurück */
-.js .row__n, .js .row__body {
+.svc--live .row__n, .svc--live .row__body {
   transition: opacity .45s ease, transform .5s cubic-bezier(.2, .7, .3, 1), color .3s ease;
 }
-.js .svc.is-live .row__n,
-.js .svc.is-live .row__body { opacity: .42; }
-.js .svc.is-live .row.is-active .row__n,
-.js .svc.is-live .row.is-active .row__body { opacity: 1; }
-.js .row.is-active .row__n { color: var(--fg); }
+.svc--live.is-live .row__n,
+.svc--live.is-live .row__body { opacity: .42; }
+.svc--live.is-live .row.is-active .row__n,
+.svc--live.is-live .row.is-active .row__body { opacity: 1; }
+.svc--live .row.is-active .row__n { color: var(--fg); }
 
 /* Akzentlinie, die unter der aktiven Zeile aufzieht */
-.js .row::after {
+.svc--live .row::after {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: -1px;
@@ -307,17 +312,17 @@ p:last-child { margin-bottom: 0; }
   transform-origin: left;
   transition: transform .55s cubic-bezier(.2, .7, .3, 1);
 }
-.js .row.is-active::after { transform: scaleX(1); }
+.svc--live .row.is-active::after { transform: scaleX(1); }
 
 /* Ab Tablet nebeneinander: Liste links, Bild rechts mitlaufend */
 @media (min-width: 900px) {
-  .js .svc {
+  .svc--live {
     grid-template-columns: minmax(0, 1fr) minmax(0, .78fr);
     gap: clamp(2rem, 4vw, 4rem);
     align-items: start;
   }
-  .js .svc__list { grid-column: 1; grid-row: 1; }
-  .js .svc__media {
+  .svc--live .svc__list { grid-column: 1; grid-row: 1; }
+  .svc--live .svc__media {
     grid-column: 2; grid-row: 1;
     top: 110px;
     height: auto;
@@ -325,7 +330,7 @@ p:last-child { margin-bottom: 0; }
     aspect-ratio: 4 / 5;
     margin-bottom: 0;
   }
-  .js .row.is-active .row__body { transform: translateX(10px); }
+  .svc--live .row.is-active .row__body { transform: translateX(10px); }
 }
 
 /* ---------- Bildband ---------- */

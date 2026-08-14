@@ -51,6 +51,11 @@
   media.appendChild(counter);
 
   wrap.insertBefore(media, wrap.firstChild);
+  /* Erst jetzt umschalten: Die Klasse blendet die Vorschaubilder in den
+     Zeilen aus. Käme sie früher — oder hinge sie nur daran, dass
+     JavaScript läuft — stünde die Sektion bei einem Fehler oberhalb
+     dieser Zeile ganz ohne Bilder da. */
+  wrap.classList.add("svc--live");
 
   var active = -1;
 
