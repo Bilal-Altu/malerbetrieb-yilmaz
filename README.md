@@ -67,10 +67,60 @@ abmahnfähig — dasselbe Thema wie erfundene Bewertungen. Deshalb steht in beid
 Entwürfen ein sichtbarer Hinweis unter der Galerie und ein angepasster
 Bildnachweis im Impressum. Beides erst entfernen, wenn die echten Fotos drin sind.
 
-Der Vorher/Nachher-Regler in Entwurf 1 hat bewusst **keine** Beispielbilder
-bekommen: Zwei zusammenhanglose Stockfotos als „vorher" und „nachher"
-auszugeben, wäre eine glatte Falschaussage. Dafür braucht es ein echtes
-Projektpaar vom selben Standpunkt.
+### Der Vorher/Nachher-Regler
+
+Beide Seiten zeigen **dasselbe Foto**. Die „Vorher"-Seite wird per CSS
+verwittert: ein Farbfilter zieht das frische Weiß ins vergilbte Graubeige,
+darüber liegt `assets/img/verwitterung.svg` — eine prozedurale Auflage aus
+Rauschen für die Fleckigkeit, Verläufen für Algen am Sockel und Schmutzfahnen
+unter Fensterbank und Traufe, dazu ein paar Haarrisse.
+
+Das ist bewusst so gebaut. Zwei getrennt erzeugte Bilder zeigen nie exakt
+dasselbe Haus aus demselben Winkel bei demselben Licht — und genau davon lebt
+ein Vorher/Nachher-Regler. Mit einem Foto ist die Deckungsgleichheit garantiert.
+
+**Umschalten:** Die Klasse `is-demo` am Element `#compare` in `index.html`
+steuert das. Sobald echte Vorher-Fotos vorliegen, fällt die Klasse weg und
+`referenz-1-vorher.jpg` wird unverändert gezeigt. Bis dahin muss die
+Kennzeichnung unter dem Regler und im Impressum stehen bleiben.
+
+### Falls doch echte KI-Bilder gewünscht sind
+
+Ich kann keine Bilder erzeugen — Claude ist ein Text- und Codemodell, für
+Bildsynthese braucht es ein eigenes Modell. Diese beiden Prompts sind so
+gebaut, dass das Paar zusammenpasst; das ist der schwierige Teil daran.
+
+**Wichtig:** Erst das „Nachher" erzeugen, dann dieses Bild als Vorlage in den
+Bild-zu-Bild-Modus geben („bearbeite dieses Bild") und nur den Zustand der
+Fassade ändern. Zwei unabhängig erzeugte Bilder passen praktisch nie zusammen.
+
+Gemeinsame Basis (in beiden Prompts wörtlich identisch halten):
+
+> Photorealistic architectural photograph of a detached two-storey German
+> single-family house from the 1970s. Straight-on frontal view of the gable
+> facade, camera at street level, 35 mm lens, eye height. The house fills the
+> frame, a narrow strip of lawn at the bottom, neutral overcast sky above.
+> Simple rectangular windows with roller shutter boxes, red clay tile roof,
+> a downpipe at the left edge. Soft, even overcast daylight, no harsh shadows.
+> No people, no cars, no text, no watermark. 16:10 aspect ratio.
+
+Ergänzung **Vorher**:
+
+> The render is visibly weathered: blotchy grey-beige, green-black algae
+> staining below the windowsills and along the base, hairline cracks radiating
+> from the window corners, flaking paint near the roof edge, dirty streaks
+> under the sills.
+
+Ergänzung **Nachher**:
+
+> The render is freshly finished in a warm off-white with anthracite window
+> reveals, evenly coloured and clean, crisp edges, new white sills, the base
+> painted in a darker plinth grey.
+
+Ergebnisse als `referenz-1-vorher.jpg` und `referenz-1-nachher.jpg` in
+`assets/img/` legen, Querformat 16:10, und die Klasse `is-demo` entfernen.
+Die Kennzeichnung als Beispieldarstellung muss auch dann stehen bleiben —
+ein erzeugtes Bild unter „Referenzen" zeigt ein Projekt, das es nie gab.
 
 ## Fotos einsetzen
 
