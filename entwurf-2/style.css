@@ -271,8 +271,13 @@ p:last-child { margin-bottom: 0; }
     column-gap: clamp(1rem, 2vw, 2.2rem);
     align-items: start;
   }
-  .idx-body { grid-column: 1 / 6; }
-  .idx-pic  { grid-column: 7 / 13; }
+  /* grid-row: 1 ist hier nicht optional. Das Bild steht im HTML zuerst
+     und belegt die Spalten 7-12; der Text will danach nach links in die
+     Spalten 1-6 — also hinter den Rastercursor. Ohne feste Zeile schiebt
+     die automatische Platzierung ihn dafür eine Zeile nach unten, und
+     der Text landet unter dem Bild statt daneben. */
+  .idx-body { grid-column: 1 / 6; grid-row: 1; }
+  .idx-pic  { grid-column: 7 / 13; grid-row: 1; }
 
   /* Die Ausbrueche: zwei Eintraege greifen eine Spalte weiter und
      sitzen tiefer, einer steht hochkant. Der Text bleibt unberuehrt. */
