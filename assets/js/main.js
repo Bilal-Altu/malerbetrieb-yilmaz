@@ -86,6 +86,13 @@
   if (reduceMotion || !("IntersectionObserver" in window)) {
     revealAll();
   } else {
+    /* Das Verstecken wird erst hier eingeschaltet — von genau der Stelle,
+       die es auch wieder aufhebt. Hinge es an der Klasse "js" aus dem
+       <head>, würde eine veraltete oder fehlerhafte Fassung dieser Datei
+       Inhalte dauerhaft unsichtbar machen, statt nur die Animation zu
+       verlieren. Genau das ist in Entwurf 2 passiert. */
+    document.documentElement.classList.add("reveal-on");
+
     var io = new IntersectionObserver(
       function (entries, obs) {
         entries.forEach(function (entry, i) {

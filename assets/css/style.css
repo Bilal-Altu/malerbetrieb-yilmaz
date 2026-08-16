@@ -1191,12 +1191,12 @@ input.is-invalid, textarea.is-invalid { border-color: var(--red); background: rg
    ========================================================= */
 /* Nur wenn JavaScript läuft, wird überhaupt etwas versteckt.
    Ohne JS (und für Suchmaschinen-Crawler) ist alles sofort sichtbar. */
-.js .reveal {
+.reveal-on .reveal {
   opacity: 0;
   transform: translateY(22px);
   transition: opacity .6s cubic-bezier(.2, .7, .3, 1), transform .6s cubic-bezier(.2, .7, .3, 1);
 }
-.js .reveal.is-in { opacity: 1; transform: none; }
+.reveal-on .reveal.is-in { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
