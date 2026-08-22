@@ -42,6 +42,7 @@
   var beinR     = document.getElementById("beinR");
   var jubel     = document.getElementById("jubel");
   var hinweis   = document.getElementById("wandHinweis");
+  var armFrei   = document.getElementById("armFrei");
   var reset     = document.getElementById("wandReset");
   if (!maskeVoll || !striche || !figur || !stange || !rolle) return;
 
@@ -67,7 +68,7 @@
 
   var ruhe = true;
   var fx = 0, fxZiel = 0, fxVorher = 0;
-  var beinPhase = 0, schrittTempo = 0;
+  var beinPhase = 0, schrittTempo = 0, blickZiel = -1;
   var letzterPunkt = null;
   var letzteZeit = 0;
   var lagenPfade = [];
@@ -184,6 +185,77 @@
     fxZiel = Math.max(-286, Math.min(60, fxZiel));
   }
 
+  /* =========================================================
+     Der Gangzyklus
+
+     Vorher pendelten zwei starre Stöcke um die Hüfte. Das ist eine
+     Schere, kein Gang: kein Knie, kein Abheben, die Füße schleifen
+     dauernd am Boden — der Grund, warum es nach Schweben aussah.
+
+     Jetzt hat jedes Bein Oberschenkel und Unterschenkel. Vorgegeben
+     wird nur die Fußbahn; das Knie ergibt sich daraus rückwärts
+     (Zweigelenk-Kinematik: Schnittpunkt zweier Kreise um Hüfte und
+     Fuß). Die Fußbahn hat zwei Abschnitte, wie beim echten Gehen:
+
+       Standphase (60 % des Zyklus): Der Fuß bleibt am Boden stehen
+       und wandert relativ zum Körper nach hinten — der Körper
+       schiebt sich über ihn hinweg.
+       Schwungphase (40 %): Der Fuß hebt ab, schwingt nach vorn und
+       setzt wieder auf.
+
+     Das zweite Bein läuft eine halbe Periode versetzt. Der Körper
+     federt zweimal je Zyklus: hoch im Einbeinstand, tief beim
+     Aufsetzen. Der freie Arm schwingt gegenläufig zum Bein.
+     ========================================================= */
+  var OBERSCHENKEL = 24, UNTERSCHENKEL = 24;
+  var BODEN = 44;               // Abstand Hüfte -> Boden
+  /* Damit der Standfuß nicht schleift, MUSS gelten:
+     Schrittlänge = Fußweg in der Standphase / Standanteil
+     = 24 / 0,6 = 40. Bei 27 wanderte der Körper langsamer als der
+     Fuß relativ zu ihm — genau das ergibt den Mondgang. */
+  var SCHRITTLAENGE = 40;
+  var blick = -1;               // -1 = nach links gewandt
+
+  /** Fußposition relativ zur Hüfte für einen Zyklusanteil p. */
+  function fussBahn(p, staerke) {
+    var weite = 12 * staerke, hub = 8 * staerke;
+    if (p < 0.6) {                         // Standphase: Fuß bleibt liegen
+      var s = p / 0.6;
+      return { x: weite - 2 * weite * s, y: BODEN };
+    }
+    var s2 = (p - 0.6) / 0.4;              // Schwungphase: Fuß hebt ab
+    return { x: -weite + 2 * weite * s2,
+             y: BODEN - hub * Math.sin(Math.PI * s2) };
+  }
+
+  /** Knie aus Hüfte und Fuß zurückrechnen. */
+  function kniePunkt(fx2, fy2) {
+    var d = Math.sqrt(fx2 * fx2 + fy2 * fy2) || 0.001;
+    var dd = Math.min(d, OBERSCHENKEL + UNTERSCHENKEL - 0.01);
+    var a = (dd * dd + OBERSCHENKEL * OBERSCHENKEL - UNTERSCHENKEL * UNTERSCHENKEL) / (2 * dd);
+    var h = Math.sqrt(Math.max(0, OBERSCHENKEL * OBERSCHENKEL - a * a));
+    var ux = fx2 / d, uy = fy2 / d;
+    /* Das Knie wird zur Blickrichtung hin ausgelenkt — sonst knickt
+       das Bein nach hinten weg wie bei einem Vogel. */
+    return { x: ux * a - uy * h, y: uy * a + ux * h };
+  }
+
+  /** Ein Bein zeichnen: Hüfte -> Knie -> Fuß. */
+  function beinZeichnen(gruppe, hueftX, hueftY, p, staerke, versatz) {
+    if (!gruppe) return;
+    var pfad = gruppe.firstElementChild;
+    if (!pfad) return;
+    var f = fussBahn(p, staerke);
+    var fx2 = f.x * blick + versatz;
+    var fy2 = f.y;
+    var k = kniePunkt(fx2, fy2);
+    pfad.setAttribute("d",
+      "M" + hueftX.toFixed(1) + " " + hueftY.toFixed(1) +
+      " L" + (hueftX + k.x).toFixed(1) + " " + (hueftY + k.y).toFixed(1) +
+      " L" + (hueftX + fx2).toFixed(1) + " " + (hueftY + fy2).toFixed(1));
+    gruppe.removeAttribute("transform");
+  }
+
   function zeichnen() {
     fx += (fxZiel - fx) * 0.12;
 
@@ -193,17 +265,33 @@
     fxVorher = fx;
     var wunsch = Math.min(1, Math.abs(dfx) / 1.4);
     schrittTempo += (wunsch - schrittTempo) * 0.18;
-    beinPhase += Math.abs(dfx) * 0.42;
+    beinPhase += Math.abs(dfx);
 
     figur.setAttribute("transform", "translate(" + fx.toFixed(2) + " 0)");
 
-    var schwung = Math.sin(beinPhase) * 17 * schrittTempo;
-    var hueft = 352 + fx;
-    if (beinL) beinL.setAttribute("transform", "rotate(" + schwung.toFixed(1) + " " + hueft.toFixed(1) + " 196)");
-    if (beinR) beinR.setAttribute("transform", "rotate(" + (-schwung).toFixed(1) + " " + hueft.toFixed(1) + " 196)");
+    /* Blickrichtung weich nachziehen, sonst kippt der Gang bei jedem
+       Richtungswechsel schlagartig um. */
+    if (Math.abs(dfx) > 0.05) blickZiel = dfx > 0 ? 1 : -1;
+    blick += (blickZiel - blick) * 0.12;
+
+    /* WICHTIG: Beine und Arm sitzen INNERHALB der bereits um fx
+       verschobenen Figur. Ihre Koordinaten sind deshalb die
+       unverschobenen. Vorher stand hier 352 + fx — der Drehpunkt
+       wanderte also doppelt so schnell davon wie die Figur selbst. */
+    var hueftX = 352, hueftY = 196;
+    var p = (beinPhase / SCHRITTLAENGE) % 1;
+    if (p < 0) p += 1;
+    beinZeichnen(beinL, hueftX, hueftY, p, schrittTempo, -5);
+    beinZeichnen(beinR, hueftX, hueftY, (p + 0.5) % 1, schrittTempo, 5);
+
     if (rumpf) {
-      var wippe = -Math.abs(Math.sin(beinPhase)) * 2.1 * schrittTempo;
+      /* Hoch im Einbeinstand, tief beim Aufsetzen — zweimal je Zyklus. */
+      var wippe = -2 * Math.abs(Math.sin(2 * Math.PI * p)) * schrittTempo;
       rumpf.setAttribute("transform", "translate(0 " + wippe.toFixed(2) + ")");
+    }
+    if (armFrei) {
+      var armSchwung = -Math.sin(2 * Math.PI * p) * 15 * schrittTempo;
+      armFrei.setAttribute("transform", "rotate(" + armSchwung.toFixed(1) + " " + hueftX + " 168)");
     }
 
     var hand = { x: BASIS_HAND.x + fx, y: BASIS_HAND.y };
