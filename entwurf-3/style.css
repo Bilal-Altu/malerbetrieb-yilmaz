@@ -328,39 +328,49 @@ p:last-child { margin-bottom: 0; }
    wirklich läuft. Fällt das Skript aus, ist alles sofort sichtbar. */
 .reveal-on .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s cubic-bezier(.2,.7,.3,1), transform .6s cubic-bezier(.2,.7,.3,1); }
 .reveal-on .reveal.is-in { opacity: 1; transform: none; }
-
 /* =========================================================
-   Die Animation: das Männchen streicht die Wand
-   Der Anstrich wächst von unten, der Arm mit der Rolle wischt
-   dazu auf und ab, beides im selben 8-Sekunden-Takt. Reine
-   Zierde: Fällt die Animation aus, steht einfach ein fertig
-   gestrichenes Haus da — nie ein leeres.
+   Die Wand zum Selberstreichen
+
+   Es gibt hier bewusst keine Keyframes mehr. Die vorherige Fassung
+   ließ einen Arm wischen und unabhängig davon ein Rechteck
+   hochwachsen — beides ohne Bezug zueinander, und genau das sah
+   nach Clipart aus. Jetzt führt der Zeiger die Rolle, und seine
+   Spur legt die Farbe frei. Die Bewegung kommt komplett aus
+   wand.js, die CSS regelt nur das Drumherum.
    ========================================================= */
-.anstrich { transform-box: view-box; transform-origin: 165px 170px; animation: anstrich 8s cubic-bezier(.4,0,.6,1) infinite; }
-@keyframes anstrich {
-  0%, 7%    { transform: scaleY(0); opacity: 1; }
-  70%, 90%  { transform: scaleY(1); opacity: 1; }
-  97%, 100% { transform: scaleY(1); opacity: 0; }
+
+/* Der Zeiger wird zur Rolle, deshalb verschwindet der Systemzeiger.
+   Die Klasse setzt wand.js erst, wenn es wirklich läuft — sonst
+   stünde man ohne Zeiger und ohne Rolle da. */
+.szene.malbar { cursor: none; touch-action: pan-y; }
+#rolle, #stange { pointer-events: none; }
+#jubel { transition: opacity .4s ease; }
+
+.wand-leiste {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .8rem; margin-top: .6rem;
 }
-.arm { transform-box: view-box; transform-origin: 352px 166px; animation: wischen 8s ease-in-out infinite; }
-@keyframes wischen {
-  0%, 7%   { transform: rotate(5deg); }
-  18%      { transform: rotate(-8deg); }
-  30%      { transform: rotate(5deg); }
-  42%      { transform: rotate(-9deg); }
-  54%      { transform: rotate(4deg); }
-  66%      { transform: rotate(-7deg); }
-  78%      { transform: rotate(4deg); }
-  90%,100% { transform: rotate(5deg); }
+.wand-hinweis {
+  margin: 0; font-size: .88rem; font-weight: 600; color: var(--grau);
+  display: inline-flex; align-items: center; gap: .5rem;
+  transition: opacity .4s ease;
 }
-.figur { transform-box: view-box; transform-origin: 352px 240px; animation: wippen 8s ease-in-out infinite; }
-@keyframes wippen { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+.wand-hinweis::before {
+  content: ""; width: 14px; height: 14px; flex: none;
+  border-radius: 50%; background: var(--gelb); border: 2.5px solid var(--tinte);
+}
+.wand-hinweis.ist-weg { opacity: 0; }
+.wand-knopf { padding: .55rem 1.1rem; font-size: .85rem; box-shadow: 2px 2px 0 var(--tinte); }
+.wand-knopf:hover { box-shadow: 4px 4px 0 var(--tinte); }
+
+@media (hover: none) {
+  .szene.malbar { cursor: auto; }
+  .wand-hinweis { font-size: .84rem; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal-on .reveal { opacity: 1; transform: none; transition: none; }
-  .anstrich, .arm, .figur { animation: none; }
-  .anstrich { transform: scaleY(1); }
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
   .btn:hover, .karte:hover { transform: none; }
 }
