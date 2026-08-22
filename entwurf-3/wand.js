@@ -1,11 +1,17 @@
 /* =========================================================
    Die Wand zum Selberstreichen
 
-   Der Zeiger ist die Rolle. Seine Spur wird als dicker Strich in
-   eine SVG-Maske gezeichnet; dadurch wird die Farbfläche genau
-   dort freigelegt, wo der Zeiger war. Ursache und Wirkung sind so
-   zwangsläufig deckungsgleich — das war der Fehler der vorherigen
-   Fassung, in der ein Rechteck unabhängig vom Arm hochwuchs.
+   Der Zeiger ist die Rolle. Seine Spur wird in eine SVG-Maske
+   gezeichnet und legt dadurch die Farbfläche frei — Ursache und
+   Wirkung sind zwangsläufig dieselbe Geometrie.
+
+   Der Pinsel deckt bewusst NICHT sofort. Jeder Durchgang ist eine
+   eigene halbdurchsichtige Lage aus drei Strichbreiten: breit und
+   sehr blass außen, schmal und kräftiger innen. Dadurch ist der
+   Rand weich, ein einzelner Zug deckt nur etwa ein Drittel, und
+   erst mehrmaliges Überstreichen macht die Fläche voll. Genau so
+   verhält sich Farbe — ein einziger volldeckender Strich ist das,
+   was sich nach Malprogramm anfühlt.
 
    Ohne dieses Skript bleibt die Vollfläche in der Maske stehen und
    die Wand ist einfach fertig gestrichen. Nie eine leere Wand.
@@ -19,6 +25,7 @@
   var maskeVoll = document.getElementById("maskeVoll");
   var striche   = document.getElementById("striche");
   var figur     = document.getElementById("figur");
+  var rumpf     = document.getElementById("rumpf");
   var stange    = document.getElementById("stange");
   var rolle     = document.getElementById("rolle");
   var beinL     = document.getElementById("beinL");
@@ -31,41 +38,61 @@
   var NS = "http://www.w3.org/2000/svg";
   var BREITE = 460, HOEHE = 260;
 
-  /* Maße der Wand — nur hier wird Farbe gezählt */
-  var WAND = { x1: 28, x2: 300, y1: 28, y2: 240 };
+  /* Wandmaße — nur hier wird Deckung gezählt */
+  var WAND = { x1: 40, x2: 270, y1: 24, y2: 240 };
 
   /* Ruheposition der Figur; alles Weitere ist relativ dazu */
   var BASIS_HAND = { x: 340, y: 172 };
   var REICHWEITE = { min: 26, max: 135 };
 
-  var ruhe = true;              // noch keine echte Eingabe
-  var fx = 0;                   // waagerechte Verschiebung der Figur
-  var fxZiel = 0;
-  var beinPhase = 0;
+  /* Die drei Lagen eines Durchgangs: außen breit und blass,
+     innen schmal und kräftiger. Ergibt einen weichen Rand ohne
+     Weichzeichner — ein Filter müsste bei jedem Bild die ganze
+     wachsende Spur neu rechnen und wird schnell teuer. */
+  var LAGEN = [
+    { breite: 34, deckung: 0.09 },
+    { breite: 24, deckung: 0.13 },
+    { breite: 15, deckung: 0.22 }
+  ];
+  var PAUSE_MS = 150;      // danach beginnt ein neuer Durchgang
+
+  var ruhe = true;
+  var fx = 0, fxZiel = 0, fxVorher = 0;
+  var beinPhase = 0, schrittTempo = 0;
   var letzterPunkt = null;
-  var aktuellerPfad = null;
-  var punkteImPfad = 0;
+  var letzteZeit = 0;
+  var lagenPfade = [];     // die drei Pfade des laufenden Durchgangs
+  var punkteImZug = 0;
   var fertigGezeigt = false;
 
-  /* Abdeckung grob zählen: die Wand in Zellen teilen und merken,
-     welche schon Farbe gesehen haben. Genau genug für ein "Fertig!". */
-  var SP = 34, ZE = 24;
-  var zellen = new Uint8Array(SP * ZE);
-  var gezaehlt = 0;
+  /* Deckung zählen: die Wand in Zellen teilen und je Durchgang
+     höchstens einmal aufschlagen — sonst würde ein einziger
+     langsamer Zug die Zelle mehrfach zählen. */
+  var SP = 34, ZE = 26;
+  var deckung = new Uint8Array(SP * ZE);
+  var imZugBeruehrt = new Uint8Array(SP * ZE);
+  var ZUWACHS = 88, VOLL = 176;
 
-  /* --- Grundzustand: Vollfläche raus, ab jetzt entscheidet die Spur --- */
   maskeVoll.remove();
   svg.classList.add("malbar");
 
-  function neuerPfad() {
-    aktuellerPfad = document.createElementNS(NS, "path");
-    aktuellerPfad.setAttribute("d", "");
-    striche.appendChild(aktuellerPfad);
-    punkteImPfad = 0;
+  /** Einen neuen Durchgang beginnen: drei frische Lagen. */
+  function neuerZug() {
+    var gruppe = document.createElementNS(NS, "g");
+    lagenPfade = LAGEN.map(function (lage) {
+      var p = document.createElementNS(NS, "path");
+      p.setAttribute("d", "");
+      p.setAttribute("stroke-width", lage.breite);
+      p.setAttribute("stroke-opacity", lage.deckung);
+      gruppe.appendChild(p);
+      return p;
+    });
+    striche.appendChild(gruppe);
+    punkteImZug = 0;
+    imZugBeruehrt.fill(0);
   }
-  neuerPfad();
+  neuerZug();
 
-  /** Bildschirmkoordinaten in das Koordinatensystem der Zeichnung. */
   function inSzene(clientX, clientY) {
     var k = svg.getBoundingClientRect();
     if (!k.width) return null;
@@ -73,9 +100,8 @@
              y: (clientY - k.top) * (HOEHE / k.height) };
   }
 
-  /** Zellen unter dem Pinsel als gestrichen vermerken. */
   function abdeckung(p) {
-    var r = 14;
+    var r = 13;
     var sx1 = Math.floor((p.x - r - WAND.x1) / (WAND.x2 - WAND.x1) * SP);
     var sx2 = Math.ceil((p.x + r - WAND.x1) / (WAND.x2 - WAND.x1) * SP);
     var sy1 = Math.floor((p.y - r - WAND.y1) / (WAND.y2 - WAND.y1) * ZE);
@@ -83,54 +109,81 @@
     for (var sy = Math.max(0, sy1); sy < Math.min(ZE, sy2); sy++) {
       for (var sx = Math.max(0, sx1); sx < Math.min(SP, sx2); sx++) {
         var i = sy * SP + sx;
-        if (!zellen[i]) { zellen[i] = 1; gezaehlt++; }
+        if (imZugBeruehrt[i]) continue;          // je Durchgang nur einmal
+        imZugBeruehrt[i] = 1;
+        deckung[i] = Math.min(255, deckung[i] + ZUWACHS);
       }
     }
-    if (!fertigGezeigt && gezaehlt / (SP * ZE) > 0.72) {
-      fertigGezeigt = true;
-      if (jubel) jubel.setAttribute("opacity", "1");
+    if (!fertigGezeigt) {
+      var voll = 0;
+      for (var i2 = 0; i2 < deckung.length; i2++) if (deckung[i2] >= VOLL) voll++;
+      if (voll / deckung.length > 0.62) {
+        fertigGezeigt = true;
+        if (jubel) jubel.setAttribute("opacity", "1");
+      }
     }
   }
 
-  /** Einen Punkt an die Spur anhängen. */
   function malen(p) {
+    var jetzt = performance.now();
+    /* Nach einer Pause beginnt ein neuer Durchgang. Nur dadurch
+       kann sich Farbe überhaupt aufbauen: Innerhalb eines Zuges
+       ist die Lage gleichmäßig, erst die nächste legt nach. */
+    if (jetzt - letzteZeit > PAUSE_MS || punkteImZug > 320) {
+      neuerZug();
+      letzterPunkt = null;
+    }
+    letzteZeit = jetzt;
+
     if (letzterPunkt) {
       var dx = p.x - letzterPunkt.x, dy = p.y - letzterPunkt.y;
-      if (dx * dx + dy * dy < 9) return;        // zu kleine Schritte überspringen
+      if (dx * dx + dy * dy < 6) return;
     }
-    var d = aktuellerPfad.getAttribute("d");
-    aktuellerPfad.setAttribute("d", d ? d + " L" + p.x.toFixed(1) + " " + p.y.toFixed(1)
-                                      : "M" + p.x.toFixed(1) + " " + p.y.toFixed(1));
-    punkteImPfad++;
-    /* Ein Pfad wird irgendwann teuer. Nach 500 Punkten einen neuen
-       anfangen und den alten stehen lassen — die Maske bleibt gleich. */
-    if (punkteImPfad > 500) {
-      neuerPfad();
-      aktuellerPfad.setAttribute("d", "M" + p.x.toFixed(1) + " " + p.y.toFixed(1));
-      punkteImPfad = 1;
+    var teil = letzterPunkt ? " L" + p.x.toFixed(1) + " " + p.y.toFixed(1)
+                            : "M" + p.x.toFixed(1) + " " + p.y.toFixed(1);
+    for (var i = 0; i < lagenPfade.length; i++) {
+      lagenPfade[i].setAttribute("d", lagenPfade[i].getAttribute("d") + teil);
     }
-    if (letzterPunkt) beinPhase += Math.abs(p.x - letzterPunkt.x);
+    punkteImZug++;
     letzterPunkt = p;
     abdeckung(p);
   }
 
-  /** Figur, Stange und Rolle auf den Zeiger ausrichten. */
   function ausrichten(p) {
-    /* Der Maler bleibt rechts vom Zeiger und geht mit, wenn die
-       Stange sonst zu lang oder zu kurz würde. */
     var handX = BASIS_HAND.x + fx;
     var abstand = handX - p.x;
     if (abstand > REICHWEITE.max) fxZiel = fx - (abstand - REICHWEITE.max);
     else if (abstand < REICHWEITE.min) fxZiel = fx + (REICHWEITE.min - abstand);
-    fxZiel = Math.max(-292, Math.min(58, fxZiel));
+    fxZiel = Math.max(-296, Math.min(60, fxZiel));
   }
 
   function zeichnen() {
     fx += (fxZiel - fx) * 0.12;
+
+    /* Das Gehen hängt an der EIGENEN Bewegung der Figur, nicht an
+       der des Zeigers. Vorher ruderte sie mit den Beinen, während
+       sie stand, weil die Schrittphase am Zeiger hing. */
+    var dfx = fx - fxVorher;
+    fxVorher = fx;
+    var wunschTempo = Math.min(1, Math.abs(dfx) / 1.4);
+    schrittTempo += (wunschTempo - schrittTempo) * 0.18;
+    beinPhase += Math.abs(dfx) * 0.42;
+
     figur.setAttribute("transform", "translate(" + fx.toFixed(2) + " 0)");
 
+    var schwung = Math.sin(beinPhase) * 17 * schrittTempo;
+    var hueft = 352 + fx;
+    if (beinL) beinL.setAttribute("transform", "rotate(" + schwung.toFixed(1) + " " + hueft.toFixed(1) + " 196)");
+    if (beinR) beinR.setAttribute("transform", "rotate(" + (-schwung).toFixed(1) + " " + hueft.toFixed(1) + " 196)");
+    /* Bei jedem Schritt federt der Oberkörper leicht — ohne das
+       wirkt das Gehen wie Schweben. */
+    if (rumpf) {
+      var wippe = -Math.abs(Math.sin(beinPhase)) * 2.1 * schrittTempo;
+      rumpf.setAttribute("transform", "translate(0 " + wippe.toFixed(2) + ")");
+    }
+
     var hand = { x: BASIS_HAND.x + fx, y: BASIS_HAND.y };
-    var ziel = letzterPunkt || { x: hand.x - 100, y: 120 };
+    var ziel = letzterPunkt || { x: hand.x - 105, y: 120 };
 
     stange.setAttribute("x1", hand.x.toFixed(1));
     stange.setAttribute("y1", hand.y.toFixed(1));
@@ -142,16 +195,10 @@
     rolle.setAttribute("y", (ziel.y - 16).toFixed(1));
     rolle.setAttribute("transform", "rotate(" + winkel.toFixed(1) + " " + ziel.x.toFixed(1) + " " + ziel.y.toFixed(1) + ")");
 
-    /* Beine schwingen mit der zurückgelegten Strecke */
-    var s = Math.sin(beinPhase / 14) * 13;
-    if (beinL) beinL.setAttribute("transform", "rotate(" + s.toFixed(1) + " " + (352 + fx).toFixed(1) + " 196)");
-    if (beinR) beinR.setAttribute("transform", "rotate(" + (-s).toFixed(1) + " " + (352 + fx).toFixed(1) + " 196)");
-
     requestAnimationFrame(zeichnen);
   }
   requestAnimationFrame(zeichnen);
 
-  /* --- Eingaben --- */
   function ausEreignis(e) {
     var p = inSzene(e.clientX, e.clientY);
     if (!p) return;
@@ -170,18 +217,21 @@
     ausEreignis(e);
   });
   svg.addEventListener("pointerdown", function (e) {
-    svg.setPointerCapture && svg.setPointerCapture(e.pointerId);
+    if (svg.setPointerCapture) svg.setPointerCapture(e.pointerId);
+    letzterPunkt = null;
     ausEreignis(e);
   });
   svg.addEventListener("pointerleave", function () { letzterPunkt = null; });
 
+  var ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var taktId = 0;
+
   if (reset) {
     reset.addEventListener("click", function () {
       while (striche.firstChild) striche.removeChild(striche.firstChild);
-      neuerPfad();
+      neuerZug();
       letzterPunkt = null;
-      zellen = new Uint8Array(SP * ZE);
-      gezaehlt = 0;
+      deckung = new Uint8Array(SP * ZE);
       fertigGezeigt = false;
       if (jubel) jubel.setAttribute("opacity", "0");
       if (hinweis) hinweis.classList.remove("ist-weg");
@@ -190,33 +240,31 @@
     });
   }
 
-  /* --- Vorführung, solange niemand selbst malt ---
-     Ohne sie stünde beim Laden eine graue, unfertige Wand da. Sie
-     hört sofort auf, sobald jemand den Zeiger bewegt. */
-  var ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var taktId = 0;
-
+  /* --- Vorführung, solange niemand selbst malt --- */
   function vorfuehren() {
+    if (taktId) { window.clearInterval(taktId); taktId = 0; }
+
     if (ruhig) {                       // keine Bewegung gewünscht: fertig zeigen
-      var d = "M" + WAND.x1 + " " + (WAND.y1 + 14);
-      for (var y = WAND.y1 + 14; y < WAND.y2; y += 22) {
-        d += " L" + WAND.x2 + " " + y + " L" + WAND.x2 + " " + (y + 11) +
-             " L" + WAND.x1 + " " + (y + 11) + " L" + WAND.x1 + " " + (y + 22);
+      for (var lauf = 0; lauf < 3; lauf++) {
+        neuerZug();
+        var d = "";
+        for (var y = WAND.y1 + 20; y < WAND.y2; y += 20) {
+          d += (d ? " L" : "M") + WAND.x1 + " " + y +
+               " L" + WAND.x2 + " " + y + " L" + WAND.x2 + " " + (y + 10) +
+               " L" + WAND.x1 + " " + (y + 10);
+        }
+        for (var i = 0; i < lagenPfade.length; i++) lagenPfade[i].setAttribute("d", d);
       }
-      aktuellerPfad.setAttribute("d", d);
       return;
     }
-    /* Einen noch laufenden Takt zuerst beenden — sonst malen nach
-       mehrmaligem Zuruecksetzen mehrere Vorfuehrungen gleichzeitig. */
-    if (taktId) window.clearInterval(taktId);
+
     var t = 0;
     taktId = window.setInterval(function () {
       if (!ruhe) { window.clearInterval(taktId); taktId = 0; return; }
       t += 0.016;
-      /* Schlangenlinie über die Wand */
-      var fortschritt = Math.min(1, t / 7);
-      var x = WAND.x1 + 16 + (WAND.x2 - WAND.x1 - 32) * fortschritt;
-      var y = 120 + Math.sin(t * 2.4) * 62;
+      var fortschritt = Math.min(1, t / 6);
+      var x = WAND.x1 + 18 + (WAND.x2 - WAND.x1 - 36) * fortschritt;
+      var y = 132 + Math.sin(t * 2.6) * 68;
       ausrichten({ x: x, y: y });
       malen({ x: x, y: y });
       if (fortschritt >= 1) { window.clearInterval(taktId); taktId = 0; }

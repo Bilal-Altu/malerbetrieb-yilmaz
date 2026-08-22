@@ -96,64 +96,85 @@
         <title id="szeneTitel">Eine Hauswand, die sich mit dem Mauszeiger streichen lässt. Ein Maler mit rotem Helm folgt mit der Rolle.</title>
         <defs>
           <clipPath id="hausform">
-            <path d="M28 240 V110 H300 V240 Z"/>
-            <path d="M14 110 L164 28 L314 110 Z"/>
+            <path d="M40 240 V96 H270 V240 Z"/>
+            <path d="M26 98 L155 24 L284 98 Z"/>
+            <path d="M218 70 h20 v30 h-20 z"/>
           </clipPath>
 
-          <!-- Die Maske entscheidet, wo Farbe sichtbar wird. Weiß = Farbe.
-               Die Vollfläche sorgt dafür, dass die Wand ohne JavaScript
-               fertig gestrichen dasteht; wand.js entfernt sie beim Start
-               und zeichnet stattdessen die Zeigerspur hinein. -->
+          <!-- Die Maske entscheidet, wo Farbe sichtbar wird. Weiß = volle
+               Farbe, Grau = dünn. Die Vollfläche sorgt dafür, dass die
+               Wand ohne JavaScript fertig gestrichen dasteht; wand.js
+               entfernt sie und zeichnet stattdessen die Zeigerspur. -->
           <mask id="pinselmaske">
             <rect id="maskeVoll" x="0" y="0" width="460" height="260" fill="#fff"/>
-            <g id="striche" fill="none" stroke="#fff" stroke-width="26"
+            <g id="striche" fill="none" stroke="#fff"
                stroke-linecap="round" stroke-linejoin="round"></g>
           </mask>
         </defs>
 
-        <path d="M10 242 H450" stroke="#e2dbcd" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M8 242 H452" stroke="#e2dbcd" stroke-width="5" stroke-linecap="round" fill="none"/>
 
         <g clip-path="url(#hausform)">
-          <rect x="0" y="0" width="460" height="260" fill="#ebe4d6"/>
+          <rect x="0" y="0" width="460" height="260" fill="#e9e2d4"/>
           <rect x="0" y="0" width="460" height="260" fill="#f2a63b" mask="url(#pinselmaske)"/>
         </g>
 
-        <!-- Haus: Umrisse liegen über der Farbe, damit die Zeichnung trägt -->
-        <path class="l" d="M28 240 V110 H300 V240"/>
-        <path class="l" d="M14 110 L164 28 L314 110"/>
-        <rect class="l" x="62" y="178" width="40" height="62" rx="3"/>
-        <circle class="f" cx="94" cy="210" r="3"/>
-        <rect class="l" x="132" y="140" width="44" height="38" rx="3"/>
-        <path class="l2" d="M154 140 V178 M132 159 H176"/>
-        <rect class="l" x="212" y="140" width="44" height="38" rx="3"/>
-        <path class="l2" d="M234 140 V178 M212 159 H256"/>
-        <rect class="l" x="146" y="62" width="36" height="30" rx="3"/>
-        <path class="l2" d="M164 62 V92 M146 77 H182"/>
+        <!-- Haus: Schornstein und Dach zuerst, Wand darüber -->
+        <path class="l" d="M218 100 V70 h20 v30"/>
+        <path class="l2" d="M214 70 h28"/>
+        <path class="l" d="M26 98 L155 24 L284 98"/>
+        <path class="l2" d="M44 92 L155 28 L266 92"/>
 
-        <path class="gelb" d="M396 214 h36 l-5 26 h-26 z"/>
-        <path class="l2" d="M393 214 h42"/>
+        <path class="l" d="M40 240 V96 H270 V240"/>
+
+        <!-- Sockel und Fallrohr -->
+        <path class="l2" d="M40 220 H270"/>
+        <path class="l2" d="M52 98 V214 q0 8 8 8"/>
+
+        <!-- Tür mit Vordach -->
+        <path class="l2" d="M62 172 h46"/>
+        <rect class="l" x="70" y="176" width="34" height="64" rx="3"/>
+        <circle class="f" cx="97" cy="208" r="3"/>
+
+        <!-- Fenster mit Bank -->
+        <rect class="l" x="132" y="126" width="42" height="38" rx="3"/>
+        <path class="l2" d="M153 126 V164 M132 145 H174 M128 168 h50"/>
+        <rect class="l" x="200" y="126" width="42" height="38" rx="3"/>
+        <path class="l2" d="M221 126 V164 M200 145 H242 M196 168 h50"/>
+
+        <!-- Giebelfenster -->
+        <rect class="l" x="141" y="56" width="28" height="26" rx="3"/>
+        <path class="l2" d="M155 56 V82"/>
+
+        <!-- Strauch neben der Tür -->
+        <path class="l2" d="M118 240 q2 -20 14 -22 q12 -2 12 22"/>
+        <path class="l2" d="M131 240 V222"/>
+
+        <path class="gelb" d="M400 214 h34 l-5 26 h-24 z"/>
+        <path class="l2" d="M397 214 h40"/>
 
         <!-- Der Maler. Position, Stange und Rolle setzt wand.js. -->
         <g id="figur">
           <g id="beinL"><path class="l" d="M352 196 L338 240"/></g>
           <g id="beinR"><path class="l" d="M352 196 L366 240"/></g>
-          <path class="l" d="M352 196 V152"/>
-          <path class="l" d="M352 168 L374 188"/>
-          <path class="l" d="M352 166 L340 172"/>
-          <use href="#kopf" transform="translate(352 136) scale(.85)"/>
+          <g id="rumpf">
+            <path class="l" d="M352 196 V152"/>
+            <path class="l" d="M352 168 L374 188"/>
+            <path class="l" d="M352 166 L340 172"/>
+            <use href="#kopf" transform="translate(352 136) scale(.85)"/>
+          </g>
           <g id="jubel" opacity="0">
             <path class="w" d="M300 104 h58 a6 6 0 0 1 6 6 v20 a6 6 0 0 1 -6 6 h-40 l-10 10 v-10 h-8 a6 6 0 0 1 -6 -6 v-20 a6 6 0 0 1 6 -6 z"/>
             <text x="329" y="127" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="17" fill="#14203a">Fertig!</text>
           </g>
         </g>
 
-        <!-- Stange und Rolle liegen über der Figur -->
         <line id="stange" class="l2" x1="340" y1="172" x2="240" y2="120"/>
         <rect id="rolle" class="gelb" x="233" y="104" width="14" height="32" rx="7"/>
       </svg>
 
       <div class="wand-leiste">
-        <p class="wand-hinweis" id="wandHinweis">Fahren Sie mit der Maus über die Wand &ndash; Sie streichen sie selbst.</p>
+        <p class="wand-hinweis" id="wandHinweis">Fahren Sie mit der Maus über die Wand &ndash; mehrmals drüber deckt besser.</p>
         <button class="btn wand-knopf" type="button" id="wandReset">Wand zurücksetzen</button>
       </div>
     </div>
