@@ -166,7 +166,6 @@
   svg.addEventListener("pointermove", function (e) {
     /* Auf dem Handy erst beim Wischen malen, sonst würde schon das
        Scrollen über die Wand alles einfärben. */
-    if (e.pointerType !== "mouse" && e.buttons === 0 && !e.isPrimary) return;
     if (e.pointerType !== "mouse" && e.buttons === 0) return;
     ausEreignis(e);
   });
@@ -195,6 +194,7 @@
      Ohne sie stünde beim Laden eine graue, unfertige Wand da. Sie
      hört sofort auf, sobald jemand den Zeiger bewegt. */
   var ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var taktId = 0;
 
   function vorfuehren() {
     if (ruhig) {                       // keine Bewegung gewünscht: fertig zeigen
@@ -206,9 +206,12 @@
       aktuellerPfad.setAttribute("d", d);
       return;
     }
+    /* Einen noch laufenden Takt zuerst beenden — sonst malen nach
+       mehrmaligem Zuruecksetzen mehrere Vorfuehrungen gleichzeitig. */
+    if (taktId) window.clearInterval(taktId);
     var t = 0;
-    var takt = window.setInterval(function () {
-      if (!ruhe) { window.clearInterval(takt); return; }
+    taktId = window.setInterval(function () {
+      if (!ruhe) { window.clearInterval(taktId); taktId = 0; return; }
       t += 0.016;
       /* Schlangenlinie über die Wand */
       var fortschritt = Math.min(1, t / 7);
@@ -216,7 +219,7 @@
       var y = 120 + Math.sin(t * 2.4) * 62;
       ausrichten({ x: x, y: y });
       malen({ x: x, y: y });
-      if (fortschritt >= 1) window.clearInterval(takt);
+      if (fortschritt >= 1) { window.clearInterval(taktId); taktId = 0; }
     }, 32);
   }
   window.setTimeout(vorfuehren, 600);
