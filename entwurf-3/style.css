@@ -336,24 +336,24 @@ p:last-child { margin-bottom: 0; }
    Zierde: Fällt die Animation aus, steht einfach ein fertig
    gestrichenes Haus da — nie ein leeres.
    ========================================================= */
-.anstrich { transform-box: view-box; transform-origin: 130px 232px; animation: anstrich 8s cubic-bezier(.4,0,.6,1) infinite; }
+.anstrich { transform-box: view-box; transform-origin: 165px 170px; animation: anstrich 8s cubic-bezier(.4,0,.6,1) infinite; }
 @keyframes anstrich {
   0%, 7%    { transform: scaleY(0); opacity: 1; }
   70%, 90%  { transform: scaleY(1); opacity: 1; }
   97%, 100% { transform: scaleY(1); opacity: 0; }
 }
-.arm { transform-box: view-box; transform-origin: 300px 150px; animation: wischen 8s ease-in-out infinite; }
+.arm { transform-box: view-box; transform-origin: 352px 166px; animation: wischen 8s ease-in-out infinite; }
 @keyframes wischen {
   0%, 7%   { transform: rotate(5deg); }
-  18%      { transform: rotate(-11deg); }
-  30%      { transform: rotate(7deg); }
-  42%      { transform: rotate(-12deg); }
-  54%      { transform: rotate(6deg); }
-  66%      { transform: rotate(-9deg); }
+  18%      { transform: rotate(-8deg); }
+  30%      { transform: rotate(5deg); }
+  42%      { transform: rotate(-9deg); }
+  54%      { transform: rotate(4deg); }
+  66%      { transform: rotate(-7deg); }
   78%      { transform: rotate(4deg); }
   90%,100% { transform: rotate(5deg); }
 }
-.figur { transform-box: view-box; transform-origin: 300px 232px; animation: wippen 8s ease-in-out infinite; }
+.figur { transform-box: view-box; transform-origin: 352px 240px; animation: wippen 8s ease-in-out infinite; }
 @keyframes wippen { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
 
 @media (prefers-reduced-motion: reduce) {
