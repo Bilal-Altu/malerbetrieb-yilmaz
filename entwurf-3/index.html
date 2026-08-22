@@ -95,20 +95,15 @@
       <svg class="szene" id="szene" viewBox="0 0 460 260" role="img" aria-labelledby="szeneTitel">
         <title id="szeneTitel">Eine Hauswand, die sich mit dem Mauszeiger streichen lässt. Ein Maler mit rotem Helm folgt mit der Rolle.</title>
         <defs>
+          <!-- Gestrichen wird nur die Wand samt Giebel, nicht das Dach. -->
           <clipPath id="hausform">
-            <path d="M40 240 V96 H270 V240 Z"/>
-            <path d="M26 98 L155 24 L284 98 Z"/>
-            <path d="M218 70 h20 v30 h-20 z"/>
+            <path d="M60 240 V132 H280 V240 Z"/>
+            <path d="M60 133 L170 58 L280 133 Z"/>
           </clipPath>
 
-          <!-- Die Maske entscheidet, wo Farbe sichtbar wird. Weiß = volle
-               Farbe, Grau = dünn. Die Vollfläche sorgt dafür, dass die
-               Wand ohne JavaScript fertig gestrichen dasteht; wand.js
-               entfernt sie und zeichnet stattdessen die Zeigerspur. -->
           <mask id="pinselmaske">
             <rect id="maskeVoll" x="0" y="0" width="460" height="260" fill="#fff"/>
-            <g id="striche" fill="none" stroke="#fff"
-               stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="striche" fill="#fff" stroke="none"></g>
           </mask>
         </defs>
 
@@ -119,36 +114,21 @@
           <rect x="0" y="0" width="460" height="260" fill="#f2a63b" mask="url(#pinselmaske)"/>
         </g>
 
-        <!-- Haus: Schornstein und Dach zuerst, Wand darüber -->
-        <path class="l" d="M218 100 V70 h20 v30"/>
-        <path class="l2" d="M214 70 h28"/>
-        <path class="l" d="M26 98 L155 24 L284 98"/>
-        <path class="l2" d="M44 92 L155 28 L266 92"/>
+        <!-- Haus im Icon-Stil: massives Dach mit Überstand, weiße Wand
+             mit kräftiger Kontur, gefüllte Tür. -->
+        <path class="fuell" d="M232 100 h26 v-52 h-26 z"/>
+        <path class="hell" d="M239 54 v40 M249 54 v40"/>
+        <path class="fuell" d="M22 138 L170 26 L318 138 L286 138 L170 60 L54 138 Z"/>
+        <path class="l" d="M60 240 V132 H280 V240 H60"/>
+        <path class="l" d="M60 133 L170 58 L280 133"/>
 
-        <path class="l" d="M40 240 V96 H270 V240"/>
+        <rect class="fensterrahmen" x="94" y="158" width="52" height="48" rx="3"/>
+        <path class="l2" d="M120 158 V206 M94 182 H146"/>
+        <rect class="fensterrahmen" x="198" y="158" width="52" height="48" rx="3"/>
+        <path class="l2" d="M224 158 V206 M198 182 H250"/>
 
-        <!-- Sockel und Fallrohr -->
-        <path class="l2" d="M40 220 H270"/>
-        <path class="l2" d="M52 98 V214 q0 8 8 8"/>
-
-        <!-- Tür mit Vordach -->
-        <path class="l2" d="M62 172 h46"/>
-        <rect class="l" x="70" y="176" width="34" height="64" rx="3"/>
-        <circle class="f" cx="97" cy="208" r="3"/>
-
-        <!-- Fenster mit Bank -->
-        <rect class="l" x="132" y="126" width="42" height="38" rx="3"/>
-        <path class="l2" d="M153 126 V164 M132 145 H174 M128 168 h50"/>
-        <rect class="l" x="200" y="126" width="42" height="38" rx="3"/>
-        <path class="l2" d="M221 126 V164 M200 145 H242 M196 168 h50"/>
-
-        <!-- Giebelfenster -->
-        <rect class="l" x="141" y="56" width="28" height="26" rx="3"/>
-        <path class="l2" d="M155 56 V82"/>
-
-        <!-- Strauch neben der Tür -->
-        <path class="l2" d="M118 240 q2 -20 14 -22 q12 -2 12 22"/>
-        <path class="l2" d="M131 240 V222"/>
+        <path class="fuell" d="M154 240 V196 a21 21 0 0 1 42 0 V240 Z"/>
+        <circle class="hellpunkt" cx="188" cy="216" r="3.4"/>
 
         <path class="gelb" d="M400 214 h34 l-5 26 h-24 z"/>
         <path class="l2" d="M397 214 h40"/>
@@ -170,7 +150,9 @@
         </g>
 
         <line id="stange" class="l2" x1="340" y1="172" x2="240" y2="120"/>
-        <rect id="rolle" class="gelb" x="233" y="104" width="14" height="32" rx="7"/>
+        <!-- Die Rolle liegt waagerecht: So rollt man in echt, und der
+             Streifen, den sie hinterlässt, ist genau so breit wie sie. -->
+        <rect id="rolle" class="gelb" x="223" y="114" width="34" height="12" rx="5"/>
       </svg>
 
       <div class="wand-leiste">

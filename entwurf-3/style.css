@@ -374,3 +374,11 @@ p:last-child { margin-bottom: 0; }
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
   .btn:hover, .karte:hover { transform: none; }
 }
+
+/* ---------- Haus im Icon-Stil ----------
+   Massives Dach, kräftige Kontur, gefüllte Tür — nach dem
+   Vorbild aus dem Chat. Gestrichen wird nur die Wand. */
+.fuell { fill: var(--tinte); }
+.hell { fill: none; stroke: var(--papier); stroke-width: 3; stroke-linecap: round; }
+.hellpunkt { fill: var(--papier); }
+.fensterrahmen { fill: var(--weiss); stroke: var(--tinte); stroke-width: 4.5; stroke-linejoin: round; }
