@@ -69,7 +69,9 @@
   var ruhe = true;
   var fx = 0, fxZiel = 0, fxVorher = 0;
   var beinPhase = 0, schrittTempo = 0, blickZiel = -1;
-  var letzterPunkt = null;
+  var letzterPunkt = null;   // letzter GEMALTER Punkt (null = Pinsel abgehoben)
+  var rollePos = null;       // wo die Rolle steht, auch wenn gerade nicht gemalt wird
+  var letzteRichtung = null;
   var letzteZeit = 0;
   var lagenPfade = [];
   var lagenD = [];
@@ -101,6 +103,20 @@
     imZugBeruehrt.fill(0);
   }
   neuerZug();
+
+  /* Nur die Wand ist streichbar: Rechteck plus Giebeldreieck.
+     Am PC feuert pointermove auch ohne gedrueckte Taste — ohne diese
+     Pruefung malt dort jede Mausbewegung ueber Figur, Eimer und Text,
+     die Figur rennt dem Zeiger bis an den Rand hinterher und die Rolle
+     schwebt ueber dem Nichts. Auf dem Handy faellt das nicht auf, weil
+     dort nur beim Wischen gemalt wird. */
+  function imWand(p) {
+    if (p.x < 60 || p.x > 280 || p.y > 240) return false;
+    if (p.y >= 132) return true;
+    if (p.y < 58) return false;
+    var t = (133 - p.y) / (133 - 58);
+    return Math.abs(p.x - 170) <= 110 * (1 - t);
+  }
 
   function inSzene(clientX, clientY) {
     var k = svg.getBoundingClientRect();
@@ -148,7 +164,19 @@
 
   function malen(p) {
     var jetzt = performance.now();
-    if (jetzt - letzteZeit > PAUSE_MS || stempelImZug > 900) {
+    /* Neuer Durchgang bei Pause, bei Richtungsumkehr und bevor ein
+       Pfad zu gross wird. Die Umkehr ist wichtig: Am PC faehrt man
+       ohne abzusetzen hin und her — ohne sie bliebe das ein einziger
+       Zug und die Farbe wuerde nie dichter. */
+    var umkehr = false;
+    if (letzterPunkt && letzteRichtung) {
+      var rx = p.x - letzterPunkt.x, ry = p.y - letzterPunkt.y;
+      var rl = Math.sqrt(rx * rx + ry * ry);
+      if (rl > 2) {
+        umkehr = (rx / rl) * letzteRichtung.x + (ry / rl) * letzteRichtung.y < -0.25;
+      }
+    }
+    if (jetzt - letzteZeit > PAUSE_MS || umkehr || stempelImZug > 700) {
       neuerZug();
       letzterPunkt = null;
     }
@@ -173,7 +201,13 @@
       }
     }
     for (var i = 0; i < lagenPfade.length; i++) lagenPfade[i].setAttribute("d", lagenD[i]);
+    if (letzterPunkt) {
+      var mx = p.x - letzterPunkt.x, my = p.y - letzterPunkt.y;
+      var ml = Math.sqrt(mx * mx + my * my);
+      if (ml > 2) letzteRichtung = { x: mx / ml, y: my / ml };
+    }
     letzterPunkt = p;
+    rollePos = p;
     fertigPruefen();
   }
 
@@ -295,7 +329,7 @@
     }
 
     var hand = { x: BASIS_HAND.x + fx, y: BASIS_HAND.y };
-    var ziel = letzterPunkt || { x: hand.x - 110, y: 130 };
+    var ziel = rollePos || { x: 170, y: 180 };
 
     /* Die Stange endet an der Unterkante der Rolle, nicht in ihrer
        Mitte — sonst steckt der Stiel mitten im Zylinder. */
@@ -320,6 +354,14 @@
       ruhe = false;
       if (hinweis) hinweis.classList.add("ist-weg");
     }
+    if (!imWand(p)) {
+      /* Pinsel abgehoben: nicht malen und die Spur unterbrechen, sonst
+         zieht der naechste Punkt einen Strich quer durch das Bild. */
+      letzterPunkt = null;
+      svg.classList.remove("am-streichen");
+      return;
+    }
+    svg.classList.add("am-streichen");
     ausrichten(p);
     malen(p);
   }
@@ -333,7 +375,10 @@
     letzterPunkt = null;
     ausEreignis(e);
   });
-  svg.addEventListener("pointerleave", function () { letzterPunkt = null; });
+  svg.addEventListener("pointerleave", function () {
+    letzterPunkt = null;
+    svg.classList.remove("am-streichen");
+  });
 
   var ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var taktId = 0;
@@ -375,8 +420,8 @@
       t += 0.032;
       var fortschritt = Math.min(1, t / 7);
       var x = WAND.x1 + 20 + (WAND.x2 - WAND.x1 - 40) * fortschritt;
-      var mitte = (WAND.y1 + WAND.y2) / 2;
-      var y = mitte + Math.sin(t * 3.4) * ((WAND.y2 - WAND.y1) / 2 - 22);
+      var mitte = (132 + WAND.y2) / 2;
+      var y = mitte + Math.sin(t * 3.4) * ((WAND.y2 - 132) / 2 - 14);
       ausrichten({ x: x, y: y });
       malen({ x: x, y: y });
       if (fortschritt >= 1) { window.clearInterval(taktId); taktId = 0; }

@@ -342,7 +342,14 @@ p:last-child { margin-bottom: 0; }
 /* Der Zeiger wird zur Rolle, deshalb verschwindet der Systemzeiger.
    Die Klasse setzt wand.js erst, wenn es wirklich läuft — sonst
    stünde man ohne Zeiger und ohne Rolle da. */
-.szene.malbar { cursor: none; touch-action: pan-y; }
+.szene.malbar { touch-action: pan-y; }
+/* Den Zeiger nur ausblenden, solange die Rolle wirklich auf der Wand
+   steht. Vorher galt das fuer die ganze Szene — daneben hatte man
+   dann weder Zeiger noch Werkzeug. */
+.szene.am-streichen { cursor: none; }
+
+/* Hinweis je nach Eingabegeraet */
+.nur-finger { display: none; }
 #rolle, #stange { pointer-events: none; }
 #jubel { transition: opacity .4s ease; }
 
@@ -364,8 +371,10 @@ p:last-child { margin-bottom: 0; }
 .wand-knopf:hover { box-shadow: 4px 4px 0 var(--tinte); }
 
 @media (hover: none) {
-  .szene.malbar { cursor: auto; }
+  .szene.am-streichen { cursor: auto; }
   .wand-hinweis { font-size: .84rem; }
+  .nur-maus { display: none; }
+  .nur-finger { display: inline; }
 }
 
 @media (prefers-reduced-motion: reduce) {
