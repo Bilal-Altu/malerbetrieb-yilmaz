@@ -392,6 +392,10 @@ p:last-child { margin-bottom: 0; }
 .hellpunkt { fill: var(--papier); }
 .fensterrahmen { fill: var(--weiss); stroke: var(--tinte); stroke-width: 4.5; stroke-linejoin: round; }
 
-/* Der Garten. Halme in Grau statt Tinte: Sie sollen den Boden füllen,
-   nicht mit der Hauskontur um Aufmerksamkeit kämpfen. */
-.gras { fill: none; stroke: var(--grau); stroke-width: 2.6; stroke-linecap: round; }
+/* Der Garten. Die Halme sollen den Boden füllen, ohne mit der
+   Hauskontur um Aufmerksamkeit zu kämpfen. Grau wäre dafür naheliegend,
+   ergibt auf der frisch gestrichenen Wand aber nur 2.86:1 und verwäscht
+   dort. Die Abstufung läuft deshalb über die Strichstärke: 2.0 gegen
+   2.4 bei Details und 3.2 bei der Hauskontur — die feinste Linie der
+   Seite, in derselben Tinte wie alles andere. */
+.gras { fill: none; stroke: var(--tinte); stroke-width: 2; stroke-linecap: round; }
