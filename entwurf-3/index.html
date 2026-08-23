@@ -93,7 +93,7 @@
 
     <div class="hero__bild">
       <svg class="szene" id="szene" viewBox="0 0 460 260" role="img" aria-labelledby="szeneTitel">
-        <title id="szeneTitel">Eine Hauswand, die sich mit dem Mauszeiger streichen lässt. Ein Maler mit rotem Helm folgt mit der Rolle.</title>
+        <title id="szeneTitel">Ein gezeichnetes Haus mit Garten: Baum, Kübel neben der Tür, Büsche und Blumen. Die Hauswand lässt sich streichen, ein Maler mit rotem Helm folgt mit der Rolle.</title>
         <defs>
           <!-- Gestrichen wird nur die Wand samt Giebel, nicht das Dach. -->
           <clipPath id="hausform">
@@ -132,6 +132,60 @@
 
         <path class="gelb" d="M400 214 h34 l-5 26 h-24 z"/>
         <path class="l2" d="M397 214 h40"/>
+
+
+        <!-- ============================================================
+             Der Garten.
+
+             Steht im Dokument zwischen Haus und Maler: Die Pflanzen
+             liegen damit vor der Wand, der Maler läuft aber vor ihnen
+             entlang — richtige Tiefenstaffelung.
+
+             Kein Grün. Die Seite führt ausschließlich die drei
+             Logofarben, deshalb Laub in Tinte (wie Dach und Tür) und
+             Blüten in Rot und Gelb. Die Kübel sind weiß, nicht gelb:
+             Gelbe Kübel würden verschwinden, sobald die Wand
+             gestrichen ist.
+
+             Alles liegt außerhalb von imWand() in wand.js und ist
+             daher nicht streichbar — die Halme vor der Wand stören
+             das Malen nicht, weil die Ereignisse am <svg> hängen.
+             ============================================================ -->
+
+        <!-- Baum links neben dem Haus, unter dem Dachüberstand -->
+        <path class="fuell" d="M25 242 V198 h10 V242 Z"/>
+        <circle class="fuell" cx="30" cy="176" r="21"/>
+        <circle class="fuell" cx="13" cy="188" r="12.5"/>
+        <circle class="fuell" cx="47" cy="188" r="12.5"/>
+        <path class="hell" d="M30 197 V166 M30 181 L20 172 M30 187 L40 179"/>
+        <path class="l2" d="M50 242 V225"/>
+        <circle class="rot" cx="50" cy="221" r="4.5"/>
+
+        <!-- Zwei Kübel flankieren die Tür (Türmitte 175, je 34 Abstand) -->
+        <path class="w" d="M131 226 h20 l-3 16 h-14 z"/>
+        <path class="l2" d="M141 226 V213 M141 220 l-9 -6 M141 217 l9 -7"/>
+        <path class="w" d="M199 226 h20 l-3 16 h-14 z"/>
+        <path class="l2" d="M209 226 V213 M209 220 l-9 -6 M209 217 l9 -7"/>
+
+        <!-- Busch und Blumen rechts vom Haus -->
+        <path class="l2" d="M308 242 V229"/>
+        <circle class="gelb" cx="308" cy="225" r="4"/>
+        <circle class="fuell" cx="332" cy="231" r="11"/>
+        <circle class="fuell" cx="346" cy="233.5" r="8.5"/>
+        <path class="l2" d="M450 242 V226"/>
+        <circle class="rot" cx="450" cy="222" r="4.5"/>
+
+        <!-- Grasbüschel, heller als die Hauskontur, damit sie den Blick
+             nicht vom Haus wegziehen -->
+        <path class="gras" d="M72 242 v-10 M66 242 l-4 -7 M78 242 l4 -8"/>
+        <path class="gras" d="M96 242 v-8 M91 242 l-3 -6 M101 242 l3 -7"/>
+        <path class="gras" d="M116 242 v-11 M110 242 l-4 -7 M122 242 l4 -6"/>
+        <path class="gras" d="M232 242 v-9 M226 242 l-4 -7 M238 242 l4 -8"/>
+        <path class="gras" d="M254 242 v-11 M249 242 l-3 -6 M259 242 l3 -7"/>
+        <path class="gras" d="M272 242 v-8 M266 242 l-4 -6 M278 242 l4 -7"/>
+        <path class="gras" d="M296 242 v-10 M290 242 l-4 -7 M302 242 l4 -6"/>
+        <path class="gras" d="M372 242 v-9 M366 242 l-4 -6 M378 242 l4 -8"/>
+        <path class="gras" d="M388 242 v-11 M383 242 l-3 -7 M393 242 l3 -6"/>
 
         <!-- Der Maler. Position, Stange und Rolle setzt wand.js. -->
         <g id="figur">

@@ -391,3 +391,7 @@ p:last-child { margin-bottom: 0; }
 .hell { fill: none; stroke: var(--papier); stroke-width: 3; stroke-linecap: round; }
 .hellpunkt { fill: var(--papier); }
 .fensterrahmen { fill: var(--weiss); stroke: var(--tinte); stroke-width: 4.5; stroke-linejoin: round; }
+
+/* Der Garten. Halme in Grau statt Tinte: Sie sollen den Boden füllen,
+   nicht mit der Hauskontur um Aufmerksamkeit kämpfen. */
+.gras { fill: none; stroke: var(--grau); stroke-width: 2.6; stroke-linecap: round; }
