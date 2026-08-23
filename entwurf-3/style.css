@@ -422,3 +422,19 @@ p:last-child { margin-bottom: 0; }
    2.4 bei Details und 3.2 bei der Hauskontur — die feinste Linie der
    Seite, in derselben Tinte wie alles andere. */
 .gras { fill: none; stroke: var(--tinte); stroke-width: 2; stroke-linecap: round; }
+
+/* ---------- Das Werkzeug ----------
+   Eine echte Malerstange ist ein oranger Teleskopstiel mit schwarzen
+   Klemmen und einer weißen Walze am Drahtbügel. Vorher war es genau
+   andersherum: dünner Tintenstrich als Stiel, gelbe Walze.
+
+   Der Stiel besteht aus zwei deckungsgleichen Linien — außen Tinte,
+   innen Gelb. Das ergibt eine Kontur wie bei allem anderen auf der
+   Seite, ohne dass wand.js eine Form berechnen muss. Die Stärken
+   halten sich an die Figur: 5.4 außen ist etwa so dick wie ihre Arme
+   (3.2), ein echter Stiel ist nicht dicker als ein Unterarm. */
+.stangeAussen { fill: none; stroke: var(--tinte); stroke-width: 5.4; stroke-linecap: round; }
+.stangeInnen  { fill: none; stroke: var(--gelb);  stroke-width: 3.2; stroke-linecap: round; }
+.klemme       { fill: none; stroke: var(--tinte); stroke-width: 6.8; stroke-linecap: butt; }
+.draht        { fill: none; stroke: var(--tinte); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.walze        { fill: var(--weiss); stroke: var(--tinte); stroke-width: 3.2; stroke-linejoin: round; }

@@ -199,10 +199,27 @@
           </g>
         </g>
 
-        <line id="stange" class="l2" x1="340" y1="172" x2="240" y2="120"/>
-        <!-- Die Rolle liegt waagerecht: So rollt man in echt, und der
+        <!-- ============================================================
+             Das Werkzeug — eine Teleskopstange mit Rollenbügel.
+
+             Reihenfolge ist Absicht: Bügel zuerst, damit der Draht
+             später unter der Walze verschwindet; dann die Stange als
+             zwei deckungsgleiche Linien (Tinte außen, Gelb innen), so
+             muss wand.js nur die Endpunkte setzen statt eine Form neu
+             zu berechnen; die Klemmen darüber; die Walze zuletzt.
+
+             Farben nach dem echten Gerät: Stiel orange, Klemmen
+             schwarz, Walze weiß. Das trifft zufällig genau die drei
+             Logofarben.
+             ============================================================ -->
+        <path id="buegel" class="draht" d="M240 120 L246 120 L252 126"/>
+        <line id="stangeKontur" class="stangeAussen" x1="340" y1="172" x2="252" y2="126"/>
+        <line id="stange"       class="stangeInnen"  x1="340" y1="172" x2="252" y2="126"/>
+        <line id="klemme1" class="klemme" x1="0" y1="0" x2="0" y2="0"/>
+        <line id="klemme2" class="klemme" x1="0" y1="0" x2="0" y2="0"/>
+        <!-- Die Walze liegt waagerecht: So rollt man in echt, und der
              Streifen, den sie hinterlässt, ist genau so breit wie sie. -->
-        <rect id="rolle" class="gelb" x="223" y="114" width="34" height="12" rx="5"/>
+        <rect id="rolle" class="walze" x="223" y="114" width="34" height="12" rx="5"/>
         <!-- Die Blase steht bewusst NACH der Rolle im Dokument: So
              zeichnet sie zuoberst und die Stange schneidet nicht
              hindurch. Ihre Verschiebung setzt wand.js gleich der

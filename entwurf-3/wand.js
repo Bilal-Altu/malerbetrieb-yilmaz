@@ -37,6 +37,10 @@
   var figur     = document.getElementById("figur");
   var rumpf     = document.getElementById("rumpf");
   var stange    = document.getElementById("stange");
+  var stangeKontur = document.getElementById("stangeKontur");
+  var buegel       = document.getElementById("buegel");
+  var klemme1      = document.getElementById("klemme1");
+  var klemme2      = document.getElementById("klemme2");
   var rolle     = document.getElementById("rolle");
   var beinL     = document.getElementById("beinL");
   var beinR     = document.getElementById("beinR");
@@ -290,6 +294,28 @@
     gruppe.removeAttribute("transform");
   }
 
+  /** Endpunkte einer <line> setzen. */
+  function linie(el, a, b) {
+    if (!el) return;
+    el.setAttribute("x1", a.x.toFixed(1)); el.setAttribute("y1", a.y.toFixed(1));
+    el.setAttribute("x2", b.x.toFixed(1)); el.setAttribute("y2", b.y.toFixed(1));
+  }
+
+  /** Eine Klemme als kurzes Stück auf der Stangenachse, bei Anteil t.
+      Ihre Länge wächst mit der Stange: Sonst überlappen sich beide
+      Klemmen zu einem schwarzen Klumpen, sobald der Maler nahe an die
+      Wand tritt und nur noch ein kurzes Stück Stange übrig ist. */
+  function klemmeSetzen(el, a, b, t) {
+    if (!el) return;
+    var dx = b.x - a.x, dy = b.y - a.y;
+    var lang = Math.sqrt(dx * dx + dy * dy) || 1;
+    var ux = dx / lang, uy = dy / lang;
+    var halb = Math.min(3.5, lang * 0.09);
+    var m = { x: a.x + dx * t, y: a.y + dy * t };
+    linie(el, { x: m.x - ux * halb, y: m.y - uy * halb },
+              { x: m.x + ux * halb, y: m.y + uy * halb });
+  }
+
   function zeichnen() {
     fx += (fxZiel - fx) * 0.12;
 
@@ -337,15 +363,32 @@
     var hand = { x: BASIS_HAND.x + fx, y: BASIS_HAND.y };
     var ziel = rollePos || { x: 170, y: 180 };
 
-    /* Die Stange endet an der Unterkante der Rolle, nicht in ihrer
-       Mitte — sonst steckt der Stiel mitten im Zylinder. */
-    stange.setAttribute("x1", hand.x.toFixed(1));
-    stange.setAttribute("y1", hand.y.toFixed(1));
-    stange.setAttribute("x2", ziel.x.toFixed(1));
-    stange.setAttribute("y2", (ziel.y + ROLLE.h / 2).toFixed(1));
+    /* Der Bügel greift am rechten Ende der Walze an und knickt dort ab
+       — so hält ein echter Rollenbügel die Walze quer zum Stiel. Die
+       Stange setzt erst hinter dem Knick an, statt wie vorher direkt
+       im Zylinder zu stecken. */
+    var ende  = { x: ziel.x + ROLLE.b / 2 - 2, y: ziel.y };
+    var knick = { x: ende.x + 7, y: ziel.y };
+    var gx = hand.x - knick.x, gy = hand.y - knick.y;
+    var gl = Math.sqrt(gx * gx + gy * gy) || 1;
+    var fuss = { x: knick.x + (gx / gl) * 9, y: knick.y + (gy / gl) * 9 };
 
-    /* Die Rolle bleibt waagerecht. Ein Rollenbügel ist drehbar; die
-       Rolle mitzudrehen sähe aus wie ein Zeiger, nicht wie Werkzeug. */
+    if (buegel) {
+      buegel.setAttribute("d",
+        "M" + ende.x.toFixed(1)  + " " + ende.y.toFixed(1) +
+        " L" + knick.x.toFixed(1) + " " + knick.y.toFixed(1) +
+        " L" + fuss.x.toFixed(1)  + " " + fuss.y.toFixed(1));
+    }
+
+    /* Kontur und Kern liegen deckungsgleich übereinander — das ergibt
+       den gelben Stiel mit Tinte-Rand. */
+    linie(stangeKontur, fuss, hand);
+    linie(stange, fuss, hand);
+    klemmeSetzen(klemme1, fuss, hand, 0.30);
+    klemmeSetzen(klemme2, fuss, hand, 0.62);
+
+    /* Die Walze bleibt waagerecht. Ein Rollenbügel ist drehbar; die
+       Walze mitzudrehen sähe aus wie ein Zeiger, nicht wie Werkzeug. */
     rolle.setAttribute("x", (ziel.x - ROLLE.b / 2).toFixed(1));
     rolle.setAttribute("y", (ziel.y - ROLLE.h / 2).toFixed(1));
 
