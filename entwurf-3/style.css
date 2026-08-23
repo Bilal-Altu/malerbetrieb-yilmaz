@@ -214,6 +214,29 @@ p:last-child { margin-bottom: 0; }
 .karte li { position: relative; padding-left: 1.4rem; }
 .karte li::before { content: ""; position: absolute; left: 0; top: .5em; width: 9px; height: 9px; border-radius: 50%; background: var(--gelb); border: 2px solid var(--tinte); }
 
+/* Die gestrichelte Linie ist die Oberkante von .karte ul. Sie folgte
+   damit dem Fließtext — und weil die Beschreibungen unterschiedlich
+   lang sind, saß sie in jeder Karte auf einer anderen Höhe.
+
+   Subgrid hängt die vier Zeilen jeder Karte (Symbol, Überschrift, Text,
+   Liste) in das Raster der Kartenreihe ein. Jede Zeile ist damit so
+   hoch wie ihr höchster Inhalt in der Reihe, und alle vier Abschnitte
+   beginnen überall auf gleicher Höhe — auch wenn eine Überschrift oder
+   ein Listenpunkt umbricht.
+
+   Ohne Subgrid bleibt es beim heutigen Verhalten. Ein Rückfall auf
+   Flexbox wäre möglich, würde dort aber das Zusammenfallen der
+   Ränder aufheben und die Karten anders aussehen lassen. */
+@supports (grid-template-rows: subgrid) {
+  .karten { align-items: stretch; }
+  .karte {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;        /* Symbol, Überschrift, Text, Liste */
+    gap: 0;                  /* sonst erbt die Karte die Lücken der Reihe */
+  }
+}
+
 /* ---------- Ablauf ---------- */
 .schritte { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(1.6rem, 3vw, 2.2rem); grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); }
 .schritt { text-align: center; }
