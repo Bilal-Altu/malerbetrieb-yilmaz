@@ -143,16 +143,20 @@
             <path class="l" d="M352 166 L340 172"/>
             <use href="#kopf" transform="translate(352 136) scale(.85)"/>
           </g>
-          <g id="jubel" opacity="0">
-            <path class="w" d="M300 104 h58 a6 6 0 0 1 6 6 v20 a6 6 0 0 1 -6 6 h-40 l-10 10 v-10 h-8 a6 6 0 0 1 -6 -6 v-20 a6 6 0 0 1 6 -6 z"/>
-            <text x="329" y="127" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="17" fill="#14203a">Fertig!</text>
-          </g>
         </g>
 
         <line id="stange" class="l2" x1="340" y1="172" x2="240" y2="120"/>
         <!-- Die Rolle liegt waagerecht: So rollt man in echt, und der
              Streifen, den sie hinterlässt, ist genau so breit wie sie. -->
         <rect id="rolle" class="gelb" x="223" y="114" width="34" height="12" rx="5"/>
+        <!-- Die Blase steht bewusst NACH der Rolle im Dokument: So
+             zeichnet sie zuoberst und die Stange schneidet nicht
+             hindurch. Ihre Verschiebung setzt wand.js gleich der
+             Figur, damit sie mitwandert. -->
+        <g id="jubel" opacity="0">
+          <path class="w" d="M294 48 h70 a8 8 0 0 1 8 8 v26 a8 8 0 0 1 -8 8 h-8 l-6 12 l-8 -12 h-48 a8 8 0 0 1 -8 -8 v-26 a8 8 0 0 1 8 -8 z"/>
+          <text x="329" y="76" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="18" fill="#14203a">Fertig!</text>
+        </g>
       </svg>
 
       <div class="wand-leiste">

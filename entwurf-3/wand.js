@@ -302,6 +302,12 @@
     beinPhase += Math.abs(dfx);
 
     figur.setAttribute("transform", "translate(" + fx.toFixed(2) + " 0)");
+    /* Die Blase liegt ausserhalb der Figur, damit sie zuoberst
+       zeichnet — sie braucht deshalb dieselbe Verschiebung. */
+    if (jubel) {
+      var jx = Math.max(-280, Math.min(60, fx));
+      jubel.setAttribute("transform", "translate(" + jx.toFixed(2) + " 0)");
+    }
 
     /* Blickrichtung weich nachziehen, sonst kippt der Gang bei jedem
        Richtungswechsel schlagartig um. */
