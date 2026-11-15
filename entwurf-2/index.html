@@ -298,7 +298,7 @@
     </div>
 
     <div class="kontakt__right reveal">
-      <form id="anfrage" novalidate>
+      <form id="anfrage" action="../kontakt.php" method="post" novalidate>
         <h3>Anfrage senden</h3>
         <p class="form__hint">Felder mit <span aria-hidden="true">*</span> sind Pflichtfelder.</p>
 
@@ -344,7 +344,7 @@
         </div>
 
         <label class="check">
-          <input type="checkbox" id="f-dsgvo" required />
+          <input type="checkbox" id="f-dsgvo" required name="datenschutz" />
           <span>Ich habe die <a href="../datenschutz.html">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Angaben einverstanden. <span aria-hidden="true">*</span></span>
         </label>
 
